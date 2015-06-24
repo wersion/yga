@@ -1,23 +1,4 @@
 <?php
-/**
- *      ┏┓　　　┏┓
- *    ┏┛┻━━━┛┻┓
- *    ┃　　　　　　　┃
- *    ┃　　　━　　　┃
- *    ┃　┳┛　┗┳　┃
- *    ┃　　　　　　　┃
- *    ┃　　　┻　　　┃
- *    ┃　　　　　　　┃
- *    ┗━┓　　　┏━┛
- *        ┃　　　┃   神兽保佑
- *        ┃　　　┃   代码无BUG！
- *         ┃　　　┗━━━┓
- *        ┃　　　　　　　┣┓
- *        ┃　　　　　　　┏┛
- *        ┗┓┓┏━┳┓┏┛
- *          ┃┫┫　┃┫┫
- *          ┗┻┛　┗┻┛
- */
 header("Content-type:text/html;charset=utf-8");
 use yii\bootstrap\Modal;
 use kartik\widgets\ActiveForm;

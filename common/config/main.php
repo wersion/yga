@@ -1,7 +1,9 @@
 <?php
 $db = require(__DIR__.'/db.php');
+$modules = require(__DIR__.'/modules.php');
 return [
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
+	'modules' => $modules['modules'],
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',

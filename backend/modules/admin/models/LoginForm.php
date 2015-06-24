@@ -1,9 +1,9 @@
 <?php
-namespace app\models;
+namespace app\modules\admin\models;
 
-use backend\models\TAdmUser;
 use Yii;
 use yii\base\Model;
+use backend\modules\admin\models\TAdmUser;
 
 /**
  * Login form

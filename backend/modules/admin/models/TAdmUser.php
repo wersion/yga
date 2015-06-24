@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace backend\modules\admin\models;
 
 use Yii;
 use yii\web\IdentityInterface;

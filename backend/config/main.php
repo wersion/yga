@@ -11,14 +11,10 @@ return [
     'language'=>'zh-CN',
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
-    'modules' => [
-        'admin' => [
-            'class' => 'mdm\admin\Module',
-        ]
-    ],
+    'modules' => [],
     'components' => [
         'user' => [
-            'identityClass' => 'backend\models\TAdmUser',
+            'identityClass' => 'backend\modules\admin\models\TAdmUser',
             'enableAutoLogin' => true,
         ],
         'request'=>[
@@ -41,6 +37,7 @@ return [
             'showScriptName' => false,
             'rules'=>[
                 '<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
+            	'<module:\w+>/<controller:\w+>/<action:\w+>'=>'<module>/<controller>/<action>',
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'user'],
             ],
         ],
