@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: olebar
- * Date: 2014/11/6
- * Time: 11:14:32
- */
 
 namespace backend\controllers;
 

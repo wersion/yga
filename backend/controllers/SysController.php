@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: olebar
- * Date: 2014/10/22
- * Time: 16:30:15
- */
 namespace backend\controllers;
 
 use kartik\widgets\ActiveForm;

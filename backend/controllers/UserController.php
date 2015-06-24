@@ -7,15 +7,14 @@ use yii\caching\ChainedDependency;
 use yii\caching\ExpressionDependency;
 use yii\caching\DbDependency;
 use backend\models\TMenu;
-use yii\web\Controller;
 use yii\filters\AccessControl;
 use backend\modules\admin\models\TAdmUser;
 use app\modules\admin\models\LoginForm;
+use backend\base\BackendController;
 
-class UserController extends Controller {
+class UserController extends BackendController {
 	/**
 	 * 登陆
-	 * 
 	 * @return null|string
 	 */
 	public function actionLogin() {
