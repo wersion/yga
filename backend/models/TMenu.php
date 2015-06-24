@@ -22,7 +22,7 @@ class TMenu extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 't_menu';
+        return '{{%t_menu}}';
     }
 
     /**

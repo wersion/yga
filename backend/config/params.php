@@ -1,4 +1,4 @@
 <?php
 return [
-    'webname'=>'Nevermore后台管理系统',
+    'webname'=>'wocx微店系统',
 ];

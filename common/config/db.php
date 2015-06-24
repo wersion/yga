@@ -22,10 +22,11 @@
 return [
     'db'=>[
         'class' => 'yii\db\Connection',
-        'dsn' => 'mysql:host=localhost;dbname=nevermore',
+        'dsn' => 'mysql:host=localhost;dbname=rzrwwdl',
         'username' => 'root',
         'password' => '',
         'charset' => 'utf8',
+    	'tablePrefix' => 'ims_'
     ],
 ];
 ?>

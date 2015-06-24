@@ -20,7 +20,7 @@ class AuthAssignment extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'auth_assignment';
+        return '{{%auth_assignment}}';
     }
 
     /**
