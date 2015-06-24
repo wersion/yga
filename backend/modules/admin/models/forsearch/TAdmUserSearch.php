@@ -16,14 +16,8 @@ class TAdmUserSearch extends TAdmUser {
 	 */
 	public function rules() {
 		return [ 
-				[ 
-						[ 
-								'id' 
-						],'integer' 
-				],[ 
-						[ 
-								'username','password','userphoto' 
-						],'safe' 
+				[['uid'],'integer'],
+				[['username','password'],'safe'
 				] 
 		];
 	}
@@ -54,15 +48,13 @@ class TAdmUserSearch extends TAdmUser {
 		}
 		
 		$query->andFilterWhere ( [ 
-				'id' => $this->id 
+				'uid' => $this->uid 
 		] );
 		
 		$query->andFilterWhere ( [ 
 				'like','username',$this->username 
 		] )->andFilterWhere ( [ 
 				'like','password',$this->password 
-		] )->andFilterWhere ( [ 
-				'like','userphoto',$this->userphoto 
 		] );
 		
 		return $dataProvider;

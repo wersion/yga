@@ -1,5 +1,4 @@
 <?php
-header("Content-type:text/html;charset=utf-8");
 use yii\bootstrap\Modal;
 use kartik\widgets\ActiveForm;
 use common\components\MyHelper;
@@ -8,24 +7,28 @@ $this->params['breadcrumbs'] = [
     '用户管理',
 ];
 ?>
-
 <?php
 Modal::begin([
     'id' => 'md',
+    'size' => 'SIZE_LARGE',
     'header' => '<h4>添加用户</h4>',
     'footer' => '<button type="button" class="btn btn-primary" onclick="sbmt()">确定</button>',
-    'clientOptions'=>[
-        'remote'=>'http://admin/user/loadhtml'
-    ]
 ]);
+echo $this->render('loadhtml', ['model' => $model,]);
 Modal::end();
 ?>
-
+<script>
+    <?php $this->beginBlock('js_end') ?>
+    function sbmt() {
+        $('#userform').submit();
+    }
+    <?php $this->endBlock(); ?>
+</script>
+    <?php $this->registerJs($this->blocks['js_end'],\yii\web\View::POS_END) ?>
 <p>
     <?= \yii\helpers\Html::button('添加用户', [
         'class' => 'btn btn-sm btn-success',
         'onclick' => '$("#md").modal();'
-//        'onclick'=>'loadhtml(1)'
     ]) ?>
 </p>
 <?= \yii\grid\GridView::widget([
@@ -35,7 +38,7 @@ Modal::end();
         'id',
         [
             'attribute'=>'username',
-            'filter'=>['admin'=>'系统管理员','demo'=>'屌丝管理员','hello'=>'嘻哈管理员'],
+            'filter'=>['admin'=>'系统管理员'],
         ],
         'password',
         [
@@ -61,17 +64,3 @@ Modal::end();
         ],
     ],
 ]) ?>
-<script>
-    <?php $this->beginBlock('js_end') ?>
-    function sbmt() {
-        $('#userform').submit();
-    }
-    function loadhtml(id)
-    {
-        $('.modal-body').load('/user/loadhtml',{id:id},function(){
-            $('#md').modal();
-        })
-    }
-    <?php $this->endBlock(); ?>
-</script>
-<?php $this->registerJs($this->blocks['js_end'],\yii\web\View::POS_END) ?>

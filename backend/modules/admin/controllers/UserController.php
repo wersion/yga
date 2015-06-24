@@ -10,7 +10,7 @@ use yii\web\UploadedFile;
 use yii\widgets\ActiveForm;
 use backend\modules\admin\models\TAdmUser;
 use app\modules\admin\models\LoginForm;
-use backend\base\controllers\BackendController;
+use backend\base\BackendController;
 
 class UserController extends BackendController {
 	/*
@@ -45,6 +45,21 @@ class UserController extends BackendController {
 				'user/index' 
 		] );
 	}
+	
+	public function actionCreate()
+	{
+		$model = new TAdmUser ( [ 
+				'scenario' => 'create' 
+		] );
+		if ($model->load(Yii::$app->request->post()) && $model->save()) {
+			return $this->redirect(['view', 'id' => $model->uid]);
+		} else {
+			return $this->render('create', [
+					'model' => $model,
+			]);
+		}
+	}
+	
 	
 	/**
 	 * 添加用户

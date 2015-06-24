@@ -174,7 +174,7 @@ AppAsset::register($this);
 											</a>
 										</li>
 										 <li>
-											<a href="#">
+											<a href="<?php echo Yii::$app->urlManager->createUrl(['admin/user'])?>">
 												<i class="icon-leaf"></i>
 												用户管理
 											</a>
