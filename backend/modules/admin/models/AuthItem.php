@@ -20,6 +20,9 @@ use Yii;
  * @property AuthItemChild[] $authItemChildren
  */
 class AuthItem extends \yii\db\ActiveRecord {
+	const TYPE_ROLE = 1;
+	const TYPE_PERMISSION = 2;
+	
 	/**
 	 * @inheritdoc
 	 */
