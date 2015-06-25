@@ -40,6 +40,7 @@ class TAdmUser extends \yii\db\ActiveRecord implements IdentityInterface
             [['joinip', 'validtime', 'lastip'], 'string', 'max' => 15],
             [['remark'], 'string', 'max' => 500],
             [['username'], 'unique'],
+            ['password_repeat', 'compare', 'compareAttribute' => 'password'],
         	['status', 'default', 'value' => self::STATUS_FORBIDDEN],
         	['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_FORBIDDEN]],
         ];
@@ -55,8 +56,9 @@ class TAdmUser extends \yii\db\ActiveRecord implements IdentityInterface
             'groupid' => '对应组id',
             'username' => '用户名',
             'password' => '用户密码',
+        	'password_repeat' =>'重复密码',
             'salt' => '加密盐',
-            'status' => '会员状态，0正常，-1禁用',
+            'status' => '会员状态',
             'joindate' => '注册时间',
             'joinip' => '注册时ip地址',
             'lastvisit' => '上次访问时间',

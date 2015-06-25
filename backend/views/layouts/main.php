@@ -148,7 +148,7 @@ AppAsset::register($this);
 
 							<ul class="submenu">
 								<li>
-									<a href="<?php echo yii::$app->urlManager->createUrl('/weixin')?>" target="main">
+									<a href="<?php echo yii::$app->urlManager->createUrl('/weixin/wechats')?>">
 										<i class="icon-double-angle-right"></i>
 										公众号管理
 									</a>

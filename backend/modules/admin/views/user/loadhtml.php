@@ -7,9 +7,5 @@ use kartik\widgets\ActiveForm;
 <?= $form->field($model,'username')->textInput() ?>
 <?= $form->field($model,'password')->passwordInput() ?>
 <?= $form->field($model,'password_repeat')->passwordInput() ?>
-<?= $form->field($model, 'salt')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'status')->textInput() ?>
-    <?= $form->field($model, 'joindate')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'joinip')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'lastvisit')->textInput(['maxlength' => true]) ?>
+<?= $form->field($model, 'status')->dropDownList(['-1'=>'禁用','0'=>'启用'])?>
 <?php $form->end() ?>
