@@ -9,10 +9,9 @@
 <div class="center">
     <h1>
         <i class="icon-leaf green"></i>
-        <span class="red">大裤衩子</span>
+        <span class="red"><?php echo Yii::$app->params['webname']?></span>
         <span class="white">后台管理系统</span>
     </h1>
-    <h4 class="blue">&copy; Nevermore</h4>
 </div>
 
 <div class="space-6"></div>

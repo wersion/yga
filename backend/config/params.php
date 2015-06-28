@@ -1,4 +1,4 @@
 <?php
 return [
-    'webname'=>'购酷微店系统',
+    'webname'=>'购酷微店',
 ];

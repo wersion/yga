@@ -180,9 +180,9 @@ AppAsset::register($this);
 											</a>
 										</li>
 										 <li>
-											<a href="#">
+											<a href="<?php echo Yii::$app->urlManager->createUrl(['admin/role'])?>">
 												<i class="icon-leaf"></i>
-												用户组管理
+												角色管理
 											</a>
 										</li>
 									</ul>

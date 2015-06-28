@@ -1,9 +1,8 @@
 <?php
 namespace backend\util;
 
-use yii\base\Object;
 use yii;
-class WocxUtil extends Object {
+class WocxUtil{
     
    public static function random($length, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz') {
         $hash = '';

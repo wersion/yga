@@ -4,6 +4,7 @@ namespace backend\modules\admin\models;
 
 use Yii;
 use yii\web\IdentityInterface;
+use common\util\Util;
 
 /**
  * This is the model class for table "members".
@@ -45,6 +46,14 @@ class TAdmUser extends \yii\db\ActiveRecord implements IdentityInterface
         	['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_FORBIDDEN]],
         ];
     }
+    
+    
+    public function init(){
+    	parent::init();
+    	$this->joindate = time();
+    	$this->joinip = Util::getIp();
+    	$this->lastvisit = time();
+    }
 
     /**
      * @inheritdoc
@@ -77,6 +86,50 @@ class TAdmUser extends \yii\db\ActiveRecord implements IdentityInterface
         return true;
     }
 
+    public function assgin($allItems,$selectedItems){
+    		$auth = \Yii::$app->authManager;
+    		if ($selectedItems == null)
+    		{
+    			$selectedItems = [];
+    		}
+    		$existedItems = $auth->getAssignments($this->uid);
+    		$role = new Role();
+    		foreach ( $allItems as $item )
+    		{
+    			$itemName = $item['name'];
+    				
+    			$role->name = $itemName;
+    				
+    			// the selected role
+    			if (in_array($itemName, $selectedItems))
+    			{
+    				// check if exists in db
+    				if (isset($existedItems[$itemName]))
+    				{
+    					Util::info('exist:' . $itemName);
+    					continue;
+    				}
+    				else
+    				{
+    					// add new role
+    					Util::info('add:' . $itemName);
+    					$auth->assign($role, $id);
+    				}
+    			}
+    			else // unselected role
+    			{
+    				// check if exists in db
+    				if (isset($existedItems[$itemName]))
+    				{
+    					// need to be deleted
+    					Util::info('delete:' . $itemName);
+    					$auth->revoke($role, $id);
+    				}
+    			}
+    		}
+    }
+    
+    
     /**
      * 关联获取角色
      * @return \yii\db\ActiveQuery
