@@ -51,7 +51,7 @@ class m150628_020339_init_auth_item extends Migration {
 		$auth->addChild ( $role, $p5 );
 		$auth->addChild ( $role, $p6 );
 		// 分配权限至角色中
-		$user = TAdmUser::findByusername ( 'admin' );
+		$user = TAdmUser::findIdentity(1);
 		$auth->assign ( $role, $user->getId () );
 	}
 	public function down() {
