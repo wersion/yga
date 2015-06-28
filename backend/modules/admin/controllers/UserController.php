@@ -2,149 +2,99 @@
 
 namespace backend\modules\admin\controllers;
 
-use backend\modules\admin\models\forsearch\TAdmUserSearch;
 use Yii;
-use yii\helpers\FileHelper;
-use yii\web\Response;
-use yii\web\UploadedFile;
-use yii\widgets\ActiveForm;
 use backend\modules\admin\models\TAdmUser;
-use app\modules\admin\models\LoginForm;
 use backend\base\BackendController;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
+use backend\modules\admin\models\forsearch\UserSearch;
+use common\util\Util;
+use backend\modules\admin\models\AuthItem;
+use backend\modules\weixin\models\Wechats;
 
+/**
+ * UserController implements the CRUD actions for TAdmUser model.
+ */
 class UserController extends BackendController {
-	/*
-	 * 用户管理
+	
+	/**
+	 * Lists all TAdmUser models.
+	 * 
+	 * @return mixed
 	 */
 	public function actionIndex() {
-		$searchmodel = new TAdmUserSearch ();
-		$dataprovider = $searchmodel->search ( Yii::$app->request->getQueryParams () );
-		return $this->render ( 'index', [ 
-				'model' => new TAdmUser ( [ 
+		$searchModel = new UserSearch();
+		$dataProvider = $searchModel->search ( Yii::$app->request->queryParams );
+		
+		return $this->render ( 'index', ['model' => new TAdmUser ( [ 
 						'scenario' => 'create' 
-				] ),'dataprovider' => $dataprovider,'searchmodel' => $searchmodel 
+				] ), 'searchmodel' => $searchModel,'dataprovider' => $dataProvider 
 		] );
 	}
 	
 	/**
-	 * 删除用户
+	 * Displays a single TAdmUser model.
 	 * 
-	 * @param
-	 *        	$id
-	 * @return Response
-	 * @throws \Exception
+	 * @param string $id        	
+	 * @return mixed
 	 */
-	public function actionDelete($id) {
-		$model = TAdmUser::findOne ( $id );
-		if ($model->delete ()) {
-			Yii::$app->session->setFlash ( 'success' );
-		} else {
-			Yii::$app->session->setFlash ( 'fail', '删除失败' );
-		}
-		return $this->redirect ( [ 
-				'user/index' 
+	public function actionView($id) {
+		return $this->render ( 'view', [ 
+				'model' => $this->findModel ( $id ) 
 		] );
 	}
-	
-	public function actionCreate()
-	{
-		$model = new TAdmUser ( [ 
-				'scenario' => 'create' 
-		] );
-		if ($model->load(Yii::$app->request->post()) && $model->save()) {
-			return $this->redirect(['view', 'id' => $model->uid]);
-		} else {
-			return $this->render('create', [
-					'model' => $model,
-			]);
-		}
-	}
-	
 	
 	/**
-	 * 添加用户
+	 * Creates a new TAdmUser model.
+	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 * 
-	 * @return null|string
-	 * @throws \yii\base\Exception
-	 * @throws \yii\base\InvalidConfigException
+	 * @return mixed
 	 */
-	public function actionAdduser() {
-		$model = new TAdmUser ( [ 
-				'scenario' => 'create' 
-		] );
-		if (Yii::$app->request->isPost) {
-			$model->load ( $_POST );
-			if ($model->validate () && $model->save ( false )) {
-				Yii::$app->session->setFlash ( 'success' );
-			} else {
-				Yii::$app->session->setFlash ( 'fail', '添加失败' );
+	public function actionCreate() {
+		$model = new TAdmUser();
+		$allRoles = AuthItem::findAll(['type'=>AuthItem::TYPE_ROLE]);
+		if($model->load(Yii::$app->request->post())){
+			$selectedRoles = Util::getPostValue('selectedRoles');
+			if($model->save()){
+				$model->assgin($allRoles, $selectedRoles);
 			}
-			return $this->redirect ( [ 
-					'user/index' 
+			\var_dump($model->errors);
+			$this->session->setFlash('success');
+			return $this->redirect ( [
+					'view','id' => $model->uid
+			] );
+		}else{
+			return $this->render ( 'create', [
+					'model' => $model,
+					'roles'=>$allRoles
 			] );
 		}
 	}
-	public function actionLoadhtml() {
-		if ($id = Yii::$app->request->post ( 'id' )) {
-			$model = TAdmUser::findOne ( $id );
+	
+	/**
+	 * Updates an existing TAdmUser model.
+	 * If update is successful, the browser will be redirected to the 'view' page.
+	 * 
+	 * @param string $id        	
+	 * @return mixed
+	 */
+	public function actionUpdate($id) {
+		$model = $this->findModel ( $id );
+		
+		if ($model->load ( Yii::$app->request->post () ) && $model->save ()) {
+			return $this->redirect ( [ 
+					'view','id' => $model->uid 
+			] );
 		} else {
-			$model = new TAdmUser ();
+			return $this->render ( 'update', [ 
+					'model' => $model 
+			] );
 		}
-		return $this->renderPartial ( 'loadhtml', [ 
-				'model' => $model 
-		] );
-	}
-	
-	/**
-	 * ajax验证是否存在
-	 * 
-	 * @return array
-	 */
-	public function actionAjaxvalidate() {
-		$model = new TAdmUser ();
-		if (Yii::$app->request->isAjax) {
-			$model->load ( $_POST );
-			Yii::$app->response->format = Response::FORMAT_JSON;
-			return ActiveForm::validate ( $model, 'username' );
-		}
-	}
-	
-	/**
-	 * 设置头像
-	 * 
-	 * @return string|Response
-	 * @throws \Exception
-	 */
-	public function actionSetphoto() {
-		$up = UploadedFile::getInstanceByName ( 'photo' );
-		if ($up && ! $up->getHasError ()) {
-			$userid = Yii::$app->user->id;
-			$filename = $userid . '-' . date ( 'YmdHis' ) . '.' . $up->getExtension ();
-			$path = Yii::getAlias ( '@backend/web/upload' ) . '/user/';
-			FileHelper::createDirectory ( $path );
-			$up->saveAs ( $path . $filename );
-			$model = TAdmUser::findOne ( $userid );
-			$oldphoto = $model->userphoto;
-			$model->userphoto = $filename;
-			if ($model->update ()) {
-				Yii::$app->session->setFlash ( 'success' );
-				// 删除旧头像
-				if (is_file ( $path . $oldphoto ))
-					unlink ( $path . $oldphoto );
-				return $this->goHome ();
-			} else {
-				print_r ( $model->getErrors () );
-				exit ();
-			}
-		}
-		return $this->render ( 'setphoto', [ 
-				'preview' => Yii::$app->user->identity->userphoto 
-		] );
 	}
 	
 	/**
 	 * 修改密码
-	 * 
+	 *
 	 * @return string|Response
 	 */
 	public function actionChangepwd() {
@@ -159,8 +109,44 @@ class UserController extends BackendController {
 			}
 			return $this->goHome ();
 		}
-		return $this->render ( 'changepwd', [ 
-				'model' => $model 
+		return $this->render ( 'changepwd', [
+				'model' => $model
 		] );
 	}
+	
+	/**
+	 * Deletes an existing TAdmUser model.
+	 * If deletion is successful, the browser will be redirected to the 'index' page.
+	 * 
+	 * @param string $id        	
+	 * @return mixed
+	 */
+	public function actionDelete($id) {
+		$modle = $this->findModel ( $id );
+		$modle->delete ();
+		if($modle->errors){
+			$this->setFlash('fail', $modle->errors);
+		}else{
+			$this->setFlash('success');
+		}
+		return $this->redirect ( [ 
+				'index' 
+		] );
+	}
+	
+	/**
+	 * Finds the TAdmUser model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 * 
+	 * @param string $id        	
+	 * @return TAdmUser the loaded model
+	 * @throws NotFoundHttpException if the model cannot be found
+	 */
+	protected function findModel($id) {
+		if (($model = TAdmUser::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
 }
