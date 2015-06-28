@@ -19,6 +19,7 @@ class TAdmUser extends \yii\db\ActiveRecord implements IdentityInterface
 	const STATUS_ACTIVE = 0;
 	
     public $password_repeat;
+    public $password;
     /**
      * @inheritdoc
      */
@@ -51,7 +52,6 @@ class TAdmUser extends \yii\db\ActiveRecord implements IdentityInterface
     public function init(){
     	parent::init();
     	$this->joindate = time();
-    	$this->joinip = Util::getIp();
     	$this->lastvisit = time();
     }
 
@@ -82,7 +82,7 @@ class TAdmUser extends \yii\db\ActiveRecord implements IdentityInterface
     public function beforeSave($insert)
     {
         if($this->isNewRecord || $this->password!=$this->oldAttributes['password'])
-            $this->password = Yii::$app->security->generatePasswordHash($this->password);
+            $this->password_hash = Yii::$app->security->generatePasswordHash($this->password);
         return true;
     }
 
