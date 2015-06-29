@@ -16,14 +16,14 @@ class RoleController extends BackendController {
 	/**
 	 * 角色列表
 	 * 
-	 * @return string
 	 */
 	public function actionIndex() {
+		//WOCX 后期开发需要考虑到，不同角色下最大能看到的角色集合
 		$roles = Yii::$app->authManager->getRoles ();
 		$dataprovider = new ArrayDataProvider ( [ 
 				'allModels' => $roles 
 		] );
-		return $this->render ( 'roles', [ 
+		return $this->render ( 'index', [ 
 				'dataprovider' => $dataprovider 
 		] );
 	}
@@ -71,6 +71,19 @@ class RoleController extends BackendController {
 			] );
 		}
 	}
+	/**
+	 * Displays a single AuthItem model.
+	 * @param string $id
+	 * @return mixed
+	 */
+	public function actionView($id){
+		return $this->render('view', [
+				'model' => $this->findModel($id),
+		]);
+	}
+	
+	
+	
 	
 	/**
 	 * 添加/修改角色
@@ -297,5 +310,13 @@ class RoleController extends BackendController {
         if (!$auth->hasChild($role, $item)) {
             $auth->addChild($role, $item);
         }
+    }
+    
+    protected function findModel($id) {
+    	if (($model = AuthItem::findOne($id)) !== null) {
+    		return $model;
+    	} else {
+    		throw new NotFoundHttpException('The requested page does not exist.');
+    	}
     }
 }

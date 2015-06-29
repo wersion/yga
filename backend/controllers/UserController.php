@@ -10,6 +10,7 @@ use backend\models\TMenu;
 use yii\filters\AccessControl;
 use app\modules\admin\models\LoginForm;
 use backend\base\BackendController;
+use backend\modules\admin\models\User;
 
 class UserController extends BackendController {
 	/**

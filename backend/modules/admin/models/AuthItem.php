@@ -95,4 +95,17 @@ class AuthItem extends \yii\db\ActiveRecord {
 				'child' => 'name' 
 		] );
 	}
+	
+	public function getPermission(){
+		$permissions = \Yii::$app->authManager->getPermissionsByRole($this->name);
+		$result = [];
+		foreach ($permissions as $p ){
+			$result[]=$p->description;
+		}
+		$permissions = implode(',', array_values($result));
+		return $permissions;
+	}
+	
+	
+	
 }

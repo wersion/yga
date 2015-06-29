@@ -3,9 +3,9 @@ use yii\db\Schema;
 use yii\db\Migration;
 use backend\modules\admin\models\M_Permission;
 use backend\modules\admin\models\Role;
-use backend\modules\admin\models\TAdmUser;
 use yii\rbac\DbManager;
 use backend\modules\admin\models\M_Role;
+use backend\modules\admin\models\User;
 class m150628_020339_init_auth_item extends Migration {
 	public function up() {
 		$auth = \Yii::$app->authManager;
@@ -51,7 +51,7 @@ class m150628_020339_init_auth_item extends Migration {
 		$auth->addChild ( $role, $p5 );
 		$auth->addChild ( $role, $p6 );
 		// 分配权限至角色中
-		$user = TAdmUser::findIdentity(1);
+		$user = User::findByusername ( 'admin' );
 		$auth->assign ( $role, $user->getId () );
 	}
 	public function down() {

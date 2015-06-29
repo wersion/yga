@@ -4,30 +4,26 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\modules\admin\models\UserSearch */
+/* @var $model backend\modules\admin\models\forsearch\RoleSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="user-search">
+<div class="auth-item-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
+    <?= $form->field($model, 'name') ?>
 
-    <?= $form->field($model, 'username') ?>
+    <?= $form->field($model, 'type') ?>
 
-    <?= $form->field($model, 'auth_key') ?>
+    <?= $form->field($model, 'description') ?>
 
-    <?= $form->field($model, 'password_hash') ?>
+    <?= $form->field($model, 'rule_name') ?>
 
-    <?= $form->field($model, 'password_reset_token') ?>
-
-    <?php // echo $form->field($model, 'email') ?>
-
-    <?php // echo $form->field($model, 'status') ?>
+    <?= $form->field($model, 'data') ?>
 
     <?php // echo $form->field($model, 'created_at') ?>
 

@@ -3,7 +3,6 @@
 namespace backend\modules\admin\controllers;
 
 use Yii;
-use backend\modules\admin\models\TAdmUser;
 use backend\base\BackendController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -11,6 +10,8 @@ use backend\modules\admin\models\forsearch\UserSearch;
 use common\util\Util;
 use backend\modules\admin\models\AuthItem;
 use backend\modules\weixin\models\Wechats;
+use backend\modules\admin\models\User;
+use backend\modules\admin\models\UserForm;
 
 /**
  * UserController implements the CRUD actions for TAdmUser model.
@@ -26,7 +27,7 @@ class UserController extends BackendController {
 		$searchModel = new UserSearch();
 		$dataProvider = $searchModel->search ( Yii::$app->request->queryParams );
 		
-		return $this->render ( 'index', ['model' => new TAdmUser ( [ 
+		return $this->render ( 'index', ['model' => new User( [ 
 						'scenario' => 'create' 
 				] ), 'searchmodel' => $searchModel,'dataprovider' => $dataProvider 
 		] );
@@ -40,7 +41,7 @@ class UserController extends BackendController {
 	 */
 	public function actionView($id) {
 		return $this->render ( 'view', [ 
-				'model' => $this->findModel ( $id ) 
+				'model' => $this->findModel ($id) 
 		] );
 	}
 	
@@ -51,17 +52,16 @@ class UserController extends BackendController {
 	 * @return mixed
 	 */
 	public function actionCreate() {
-		$model = new TAdmUser();
+		$model = new UserForm();
 		$allRoles = AuthItem::findAll(['type'=>AuthItem::TYPE_ROLE]);
 		if($model->load(Yii::$app->request->post())){
 			$selectedRoles = Util::getPostValue('selectedRoles');
 			if($model->save()){
 				$model->assgin($allRoles, $selectedRoles);
 			}
-			\var_dump($model->errors);
 			$this->session->setFlash('success');
 			return $this->redirect ( [
-					'view','id' => $model->uid
+					'view','id' => $model->id
 			] );
 		}else{
 			return $this->render ( 'create', [
@@ -80,14 +80,22 @@ class UserController extends BackendController {
 	 */
 	public function actionUpdate($id) {
 		$model = $this->findModel ( $id );
-		
-		if ($model->load ( Yii::$app->request->post () ) && $model->save ()) {
+		$allRoles = AuthItem::findAll(['type'=>AuthItem::TYPE_ROLE]);
+		$selectedRoles = $this->auth->getRolesByUser($model->id);
+		if ($model->load ( Yii::$app->request->post () )) {
+			$selectedRoles = Util::getPostValue('selectedRoles');
+			if($model->save()){
+				//WOCX 等关于角色操作处理完回来
+				$model->assgin($allRoles, $selectedRoles);
+			}
 			return $this->redirect ( [ 
-					'view','id' => $model->uid 
+					'view','id' => $model->id 
 			] );
 		} else {
 			return $this->render ( 'update', [ 
-					'model' => $model 
+					'model' => $model,
+					'roles' => $allRoles,
+					'selectedRoles' => $selectedRoles
 			] );
 		}
 	}
@@ -98,7 +106,7 @@ class UserController extends BackendController {
 	 * @return string|Response
 	 */
 	public function actionChangepwd() {
-		$model = TAdmUser::findOne ( Yii::$app->user->id );
+		$model = User::findOne ( Yii::$app->user->id );
 		$model->scenario = 'chgpwd';
 		if (Yii::$app->request->isPost) {
 			$model->load ( Yii::$app->request->post () );
@@ -143,7 +151,7 @@ class UserController extends BackendController {
 	 * @throws NotFoundHttpException if the model cannot be found
 	 */
 	protected function findModel($id) {
-		if (($model = TAdmUser::findOne($id)) !== null) {
+		if (($model = UserForm::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

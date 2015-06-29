@@ -8,7 +8,7 @@ $this->params['breadcrumbs'] = [
 ];
 ?>
     <p>
-        <?= Html::a('添加角色', 'create', ['class' => 'btn btn-sm btn btn-success']) ?>
+        <?= Html::a('添加角色', ['create'], ['class' => 'btn btn-sm btn btn-success']) ?>
     </p>
 
 <?= GridView::widget([
@@ -26,17 +26,6 @@ $this->params['breadcrumbs'] = [
             'class'    => 'yii\grid\ActionColumn',
             'header'   => '操作',
             'template' => '{view} {update} {delete}',
-            'buttons'  => [
-                'view'   => function ($url, $model, $key) {
-                    return MyHelper::actionbutton(['rbac/assignauth', 'rolename' => $key], 'view', ['title' => '分配权限']);
-                },
-                'update' => function ($url, $model, $key) {
-                    return MyHelper::actionbutton('update?id=' . $key, 'update');
-                },
-                'delete' => function ($url, $model, $key) {
-                    return MyHelper::actionbutton('/rbac/deleterole?id=' . $key, 'delete');
-                }
-            ]
         ]
     ],
 ]) ?>
