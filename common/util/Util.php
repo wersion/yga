@@ -214,16 +214,16 @@ class Util
 
 	public static function checkAuth($permissionName, $params = [], $allowCaching = true)
 	{
-		$user = Yii::$app->user;
+		$user = \Yii::$app->user;
 		return $user->can($permissionName, $params, $allowCaching);
 	}
 	
 	public static function getIp(){
-		return Yii::$app->request->getUserIP();
+		return \Yii::$app->request->getUserIP();
 	}
 	
 	public static function getUserHostAddress(){
-		return Yii::$app->request->getUserHost();
+		return \Yii::$app->request->getUserHost();
 	}
 	
 	

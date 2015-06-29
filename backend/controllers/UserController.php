@@ -8,7 +8,6 @@ use yii\caching\ExpressionDependency;
 use yii\caching\DbDependency;
 use backend\models\TMenu;
 use yii\filters\AccessControl;
-use backend\modules\admin\models\TAdmUser;
 use app\modules\admin\models\LoginForm;
 use backend\base\BackendController;
 
@@ -18,9 +17,9 @@ class UserController extends BackendController {
 	 * @return null|string
 	 */
 	public function actionLogin() {
-		$model = new TAdmUser ();
+		$model = new LoginForm ();
 		if (Yii::$app->request->isPost) {
-			$model = new LoginForm ( $_POST );
+			$model = new LoginForm ($_POST);
 			$model->rememberMe = Yii::$app->request->post ( 'rememberMe' ) ?  : false;
 			if ($model->login ())
 				return $this->goBack ( '/' );

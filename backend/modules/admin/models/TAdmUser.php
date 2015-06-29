@@ -19,7 +19,6 @@ class TAdmUser extends \yii\db\ActiveRecord implements IdentityInterface
 	const STATUS_ACTIVE = 0;
 	
     public $password_repeat;
-    public $password;
     /**
      * @inheritdoc
      */
@@ -35,9 +34,9 @@ class TAdmUser extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return [
             [['groupid', 'status', 'joindate', 'lastvisit', 'did', 'usemoney', 'money'], 'integer'],
-            [['username', 'password', 'salt'], 'required'],
+            [['username', 'password_hash', 'salt'], 'required'],
             [['username'], 'string', 'max' => 30],
-            [['password'], 'string', 'max' => 200],
+            [['password_hash'], 'string', 'max' => 200],
             [['salt'], 'string', 'max' => 10],
             [['joinip', 'validtime', 'lastip'], 'string', 'max' => 15],
             [['remark'], 'string', 'max' => 500],
@@ -64,7 +63,7 @@ class TAdmUser extends \yii\db\ActiveRecord implements IdentityInterface
             'uid' => '用户编号',
             'groupid' => '对应组id',
             'username' => '用户名',
-            'password' => '用户密码',
+            'password_hash' => '用户密码',
         	'password_repeat' =>'重复密码',
             'salt' => '加密盐',
             'status' => '会员状态',
@@ -81,8 +80,8 @@ class TAdmUser extends \yii\db\ActiveRecord implements IdentityInterface
     }
     public function beforeSave($insert)
     {
-        if($this->isNewRecord || $this->password!=$this->oldAttributes['password'])
-            $this->password_hash = Yii::$app->security->generatePasswordHash($this->password);
+        if($this->isNewRecord || $this->password_hash != Yii::$app->security->generatePasswordHash($this->password_hash))
+            $this->password_hash = Yii::$app->security->generatePasswordHash($this->password_hash);
         return true;
     }
 

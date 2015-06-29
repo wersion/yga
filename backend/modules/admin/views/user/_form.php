@@ -10,7 +10,7 @@ use yii\helpers\ArrayHelper;
     <?php $form = ActiveForm::begin(); ?>
 
    <?= $form->field($model,'username')->textInput() ?>
-<?= $form->field($model,'password')->passwordInput() ?>
+<?= $form->field($model,'password_hash')->passwordInput() ?>
 <?= $form->field($model,'password_repeat')->passwordInput() ?>
 <?= $form->field($model, 'status')->dropDownList(['-1'=>'禁用','0'=>'启用'])?>
 <div class="form-group field-tadmuser-status">
