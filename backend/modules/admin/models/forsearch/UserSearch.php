@@ -5,12 +5,12 @@ namespace backend\modules\admin\models\forsearch;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\modules\admin\models\TAdmUser;
+use backend\modules\admin\models\User;
 
 /**
- * UserSearch represents the model behind the search form about `backend\modules\admin\models\TAdmUser`.
+ * UserSearch represents the model behind the search form about `backend\modules\admin\models\User`.
  */
-class UserSearch extends TAdmUser
+class UserSearch extends User
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class UserSearch extends TAdmUser
     public function rules()
     {
         return [
-            [['uid', 'groupid', 'status', 'joindate', 'lastvisit', 'did', 'usemoney', 'money'], 'integer'],
-            [['username'], 'safe'],
+            [['id', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email'], 'safe'],
         ];
     }
 
@@ -28,7 +28,6 @@ class UserSearch extends TAdmUser
      */
     public function scenarios()
     {
-        // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
 
@@ -41,7 +40,7 @@ class UserSearch extends TAdmUser
      */
     public function search($params)
     {
-        $query = TAdmUser::find();
+        $query = User::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -50,17 +49,18 @@ class UserSearch extends TAdmUser
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
         $query->andFilterWhere([
-            'uid' => $this->uid
+            'id' => $this->id,
+            'status' => $this->status,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'username', $this->username])
-            ->andFilterWhere(['like', 'password', $this->password]);
+            ->andFilterWhere(['like', 'email', $this->email]);
 
         return $dataProvider;
     }
