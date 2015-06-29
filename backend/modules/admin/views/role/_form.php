@@ -1,24 +1,34 @@
 <?php
 
-use kartik\widgets\ActiveForm;
-use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
 
+/* @var $this yii\web\View */
+/* @var $model backend\modules\admin\models\AuthItem */
+/* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="col-lg-6">
-    <?php $form = ActiveForm::begin([
-        'validationUrl' => Url::toRoute(['rbac/validateitemname']),
-    ]) ?>
+<div class="auth-item-form">
 
-    <?= $form->field($model, 'name', ['enableAjaxValidation' => true])->textInput() ?>
-    <?= $form->field($model, 'description')->textarea() ?>
-    <?= Html::hiddenInput('id', $model->name) ?>
-
-    <div class="form-group center">
-        <?= Html::submitButton('提交', ['class' => 'btn btn-lg btn-primary']) ?>
+    <?php $form = ActiveForm::begin(); ?>
+	<?= Html::hiddenInput('type',1)?>
+    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'rule_name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'data')->textarea(['rows' => 6]) ?>
+	<div class="form-group field-tadmuser-status">
+<label class="control-label" for="tadmuser-status">权限</label>
+<?php 
+			    echo Html::checkboxList('selectedPermissions',array_keys(ArrayHelper::map($hadPermissions,'name','description')),ArrayHelper::map($permissions, 'name', 'description'));
+			?>
+<div class="help-block"></div>
+</div>
+	
+    <div class="form-group">
+        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
-    <?php $form->end() ?>
+    <?php ActiveForm::end(); ?>
 
 </div>
