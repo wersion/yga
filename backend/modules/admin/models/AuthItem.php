@@ -106,6 +106,44 @@ class AuthItem extends \yii\db\ActiveRecord {
 		return $permissions;
 	}
 	
+	public function findByName($roleName){
+		return static::findOne(['name'=>$roleName]);
+	}
 	
+	
+	public function assginPermission($permissions,$selectedPermissions){
+		$auth = Yii::$app->authManager;
+		$existPermissions = $auth->getPermissionsByRole($this->name);
+		//重新对新选择的权限进行关联至角色中
+		if ($selectedPermissions == null)
+		{
+			$selectedPermissions = [];
+		}
+		$permission = new M_Permission();
+		foreach ( $permissions as $item ){
+			$itemName = $item['name'];
+			$permission->name = $itemName;
+			// 如果选择该权限
+			if (in_array($itemName, $selectedPermissions)){
+				// 已经存在，则跳过
+				if (isset($existPermissions[$itemName])){
+					continue;
+				}
+				else{
+					// 不存在，则将该权限分配给该角色
+					$auth->addChild($this, $permission);
+				}
+			}
+			else // 如果没选中该权限
+			{
+				// 已经分配给该角色，则需要将其取消关联
+				if (isset($existPermissions[$itemName])){
+					$auth->removeChild($this, $permission);
+				}
+			}
+		}
+		
+		
+	}
 	
 }

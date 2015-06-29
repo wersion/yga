@@ -201,36 +201,25 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface{
     		$selectedItems = [];
     	}
     	$existedItems = $auth->getAssignments($this->id);
-    	$role = new Role();
-    	foreach ( $allItems as $item )
-    	{
+    	$role = new M_Role();
+    	foreach ( $allItems as $item ){
     		$itemName = $item['name'];
-    
     		$role->name = $itemName;
-    
-    		// the selected role
-    		if (in_array($itemName, $selectedItems))
-    		{
-    			// check if exists in db
-    			if (isset($existedItems[$itemName]))
-    			{
-    				Util::info('exist:' . $itemName);
+    		// 如果选择该角色
+    		if (in_array($itemName, $selectedItems)){
+    			// 已经存在，则跳过
+    			if (isset($existedItems[$itemName])){
     				continue;
     			}
-    			else
-    			{
-    				// add new role
-    				Util::info('add:' . $itemName);
+    			else{
+    				// 不存在，则分配给该用户
     				$auth->assign($role, $this->id);
     			}
     		}
-    		else // unselected role
+    		else // 如果没选中该角色
     		{
-    			// check if exists in db
-    			if (isset($existedItems[$itemName]))
-    			{
-    				// need to be deleted
-    				Util::info('delete:' . $itemName);
+    			// 已经分配给该用户了，则需要将其取消关联
+    			if (isset($existedItems[$itemName])){
     				$auth->revoke($role, $id);
     			}
     		}

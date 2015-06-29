@@ -1,23 +1,4 @@
 <?php
-/**
- *      ┏┓　　　┏┓
- *    ┏┛┻━━━┛┻┓
- *    ┃　　　　　　　┃
- *    ┃　　　━　　　┃
- *    ┃　┳┛　┗┳　┃
- *    ┃　　　　　　　┃
- *    ┃　　　┻　　　┃
- *    ┃　　　　　　　┃
- *    ┗━┓　　　┏━┛
- *        ┃　　　┃   神兽保佑
- *        ┃　　　┃   代码无BUG！
- *         ┃　　　┗━━━┓
- *        ┃　　　　　　　┣┓
- *        ┃　　　　　　　┏┛
- *        ┗┓┓┏━┳┓┏┛
- *          ┃┫┫　┃┫┫
- *          ┗┻┛　┗┻┛
- */
 
 /* @var $this yii\web\View */
 
@@ -31,4 +12,4 @@ $this->params['breadcrumbs'] = [
 ];
 ?>
 
-<?= $this->render('_form', ['model' => $model]) ?>
+<?= $this->render('_form', ['model' => $model,'hadPermissions'=>$hadPermissions,'permissions'=>$permissions]) ?>

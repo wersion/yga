@@ -11,6 +11,7 @@ use yii\widgets\ActiveForm;
 use backend\base\BackendController;
 use backend\modules\admin\models\AuthItem;
 use backend\modules\admin\models\TAdmUser;
+use common\util\Util;
 
 class RoleController extends BackendController {
 	/**
@@ -35,39 +36,55 @@ class RoleController extends BackendController {
 	 */
 	public function actionCreate() {
 		$model = new AuthItem();
+		$permissions = AuthItem::findAll(['type'=>AuthItem::TYPE_PERMISSION]);
+		$hadPermissions = [];
 		if ($model->load ( Yii::$app->request->post () )) {
+			$selectedPermissions = Util::getPostValue('selectedPermissions');
 			$auth = Yii::$app->authManager;
 			$role = $auth->createRole ( $model->name );
 			$role->description = $model->description;
 			$auth->add ( $role );
-			Yii::$app->session->setFlash ( 'success' );
+			$model->assginPermission($permissions,$selectedPermissions);
+			$this->session->setFlash ( 'success' );
 			return $this->redirect ( [ 
-					'admin/rbac/roles' 
+					'admin/role/index' 
 			] );
 		} else {
 			return $this->render ( 'create', [ 
-					'model' => $model 
+					'model' => $model,
+					'permissions'=>$permissions,
+					'hadPermissions'=>$hadPermissions
 			] );
 		}
 	}
 	public function actionUpdate($id) {
 		$model = AuthItem::findOne ( $id );
 		$request = Yii::$app->request;
-		$auth = Yii::$app->authManager;
+		//1知道该角色下已经分配了那些权限
+		$hadPermissions = $model->name == ''?[]:$this->auth->getPermissionsByRole($model->name);
+		//2知道该系统中所有的权限
+		$permissions = AuthItem::findAll(['type'=>AuthItem::TYPE_PERMISSION]);
 		if ($request->isPost && $model->load ( $request->post () )) {
+			//3知道已经新选择了那些权限
 			$name = $model->oldAttributes ['name'];
-			$role = $auth->getRole ( $name );
+			$role = $this->auth->getRole ( $name );
 			$role->name = $model->name;
 			$role->description = $model->description;
-			if ($auth->update ( $name, $role )) {
-				Yii::$app->session->setFlash ( 'success' );
-				return $this->redirect ( [ 
-						'admin/rbac/roles' 
-				] );
+			if ($this->auth->update ( $name, $role )) {
+				$selectedPermissions = Util::getPostValue('selectedPermissions');
+				$model->assginPermission($permissions,$selectedPermissions);
+				$this->session->setFlash ( 'success' );
+			}else{
+				$this->session->setFlash ( 'fail','操作失败' );
 			}
+			return $this->redirect ( [
+					'index'
+			] );
 		} else {
 			return $this->render ( 'update', [ 
-					'model' => $model 
+					'model' => $model,
+					'permissions'=>$permissions,
+					'hadPermissions'=>$hadPermissions
 			] );
 		}
 	}
@@ -98,21 +115,20 @@ class RoleController extends BackendController {
 			$model = new AuthItem ();
 		}
 		if ($request->isPost) {
-			$auth = Yii::$app->authManager;
 			$model->load ( $request->post () );
 			if ($model->isNewRecord) {
-				$role = $auth->createRole ( $model->name );
+				$role = $this->auth->createRole ( $model->name );
 				$role->description = $model->description;
-				$rzt = $auth->add ( $role );
+				$rzt = $this->auth->add ( $role );
 			} else {
 				$name = $model->oldAttributes ['name'];
-				$role = $auth->getRole ( $name );
+				$role = $this->auth->getRole ( $name );
 				$role->name = $model->name;
 				$role->description = $model->description;
-				$rzt = $auth->update ( $name, $role );
+				$rzt = $this->auth->update ( $name, $role );
 			}
 			if ($rzt) {
-				Yii::$app->session->setFlash ( 'success' );
+				$this->session->setFlash ( 'success' );
 				return $this->redirect ( [ 
 						'admin/rbac/roles' 
 				] );
@@ -131,11 +147,11 @@ class RoleController extends BackendController {
 	 * @return Response
 	 */
 	public function actionDeleterole($id) {
-		$role = Yii::$app->authManager->getRole ( $id );
-		if (Yii::$app->authManager->remove ( $role )) {
-			Yii::$app->session->setFlash ( 'success' );
+		$role = $this->auth->getRole ( $id );
+		if ($this->auth->remove ( $role )) {
+			$this->session->setFlash ( 'success' );
 		} else {
-			Yii::$app->session->setFlash ( 'fail', '角色删除失败' );
+			$this->session->setFlash ( 'fail', '角色删除失败' );
 		}
 		return $this->redirect ( [ 
 				'admin/rbac/roles' 
