@@ -3,7 +3,7 @@ namespace app\modules\admin\models;
 
 use Yii;
 use yii\base\Model;
-use backend\modules\admin\models\TAdmUser;
+use backend\modules\admin\models\User;
 
 /**
  * Login form
@@ -70,7 +70,7 @@ class LoginForm extends Model
     public function getUser()
     {
         if ($this->_user === false) {
-            $this->_user = TAdmUser::findByUsername($this->username);
+            $this->_user = User::findByUsername($this->username);
         }
         return $this->_user;
     }

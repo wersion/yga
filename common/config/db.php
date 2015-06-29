@@ -1,32 +1,12 @@
 <?php
-/**
- *	  ┏┓　　　┏┓
- *	┏┛┻━━━┛┻┓
- *	┃　　　　　　　┃
- *	┃　　　━　　　┃
- *	┃　┳┛　┗┳　┃
- *	┃　　　　　　　┃
- *	┃　　　┻　　　┃
- *	┃　　　　　　　┃
- *	┗━┓　　　┏━┛
- *	    ┃　　　┃   神兽保佑
- *	    ┃　　　┃   代码无BUG！
- *	 	 ┃　　　┗━━━┓
- *	    ┃　　　　　　　┣┓
- *	    ┃　　　　　　　┏┛
- *	    ┗┓┓┏━┳┓┏┛
- *	      ┃┫┫　┃┫┫
- *	      ┗┻┛　┗┻┛
- */
-
 return [
     'db'=>[
         'class' => 'yii\db\Connection',
-        'dsn' => 'mysql:host=localhost;dbname=rzrwwdl',
+        'dsn' => 'mysql:host=localhost;dbname=wocx',
         'username' => 'root',
         'password' => '',
         'charset' => 'utf8',
-    	'tablePrefix' => 'ims_'
+    	'tablePrefix' => 'wocx_'
     ],
 ];
 ?>

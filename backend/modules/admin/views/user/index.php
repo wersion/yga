@@ -18,7 +18,6 @@ $this->params['breadcrumbs'] = [
     'columns' => [
         'id',
         'username',
-        'password',
         [
             'header' => '角色',
             'content' => function ($model) {

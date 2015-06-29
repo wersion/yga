@@ -11,6 +11,7 @@ use yii\filters\AccessControl;
 use backend\modules\admin\models\TAdmUser;
 use app\modules\admin\models\LoginForm;
 use backend\base\BackendController;
+use backend\modules\admin\models\User;
 
 class UserController extends BackendController {
 	/**
@@ -18,7 +19,7 @@ class UserController extends BackendController {
 	 * @return null|string
 	 */
 	public function actionLogin() {
-		$model = new TAdmUser ();
+		$model = new User ();
 		if (Yii::$app->request->isPost) {
 			$model = new LoginForm ( $_POST );
 			$model->rememberMe = Yii::$app->request->post ( 'rememberMe' ) ?  : false;
