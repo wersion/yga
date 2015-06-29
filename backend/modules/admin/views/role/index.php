@@ -8,7 +8,7 @@ $this->params['breadcrumbs'] = [
 ];
 ?>
     <p>
-        <?= Html::a('添加角色', 'create', ['class' => 'btn btn-sm btn btn-success']) ?>
+        <?= Html::a('添加角色', ['create'], ['class' => 'btn btn-sm btn btn-success']) ?>
     </p>
 
 <?= GridView::widget([
