@@ -148,7 +148,7 @@ AppAsset::register($this);
 
 							<ul class="submenu">
 								<li>
-									<a href="<?php echo yii::$app->urlManager->createUrl('/weixin/wechats')?>">
+									<a href="<?php echo yii::$app->urlManager->createUrl('/weixin/public-account')?>">
 										<i class="icon-double-angle-right"></i>
 										公众号管理
 									</a>
@@ -161,18 +161,6 @@ AppAsset::register($this);
 										<b class="arrow icon-angle-down"></b>
 									</a>
 									<ul class="submenu">
-										<li>
-											<a href="#">
-												<i class="icon-leaf"></i>
-												资料设置
-											</a>
-										</li>
-                                         <li>
-											<a href="#">
-												<i class="icon-leaf"></i>
-												注册设置
-											</a>
-										</li>
 										 <li>
 											<a href="<?php echo Yii::$app->urlManager->createUrl(['admin/user'])?>">
 												<i class="icon-leaf"></i>
