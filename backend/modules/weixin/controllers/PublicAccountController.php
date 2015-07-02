@@ -46,13 +46,23 @@ class PublicAccountController extends BackendController {
 	 */
 	public function actionCreate() {
 		$model = new PublicAccount ();
-		if ($model->load ( Yii::$app->request->post () ) && $model->save ()) {
+		if ($model->load ( Yii::$app->request->post ())) {
+			if($this->request->post('isNormal') == 'normal'){//普通模式
+				$model->normal();
+			}else{//一键模式
+				$model->onekey();
+			}
+			if($model->id){
+				$this->session->setFlash('success');
+				return $this->redirect ( [
+						'view','id' => $model->id
+				] );
+			}else{
+// 				$this->session->setFlash('fail',\implode(',', $model->errors));
+	\var_dump($model->errors);
+// 				return $this->redirect('index');
+			}
 			
-			
-			
-			return $this->redirect ( [ 
-					'view','id' => $model->id 
-			] );
 		} else {
 			return $this->render ( 'create', [ 
 					'model' => $model 

@@ -19,7 +19,7 @@ class PublicAccountSearch extends PublicAccount
     {
         return [
             [['id', 'type', 'level'], 'integer'],
-            [['name', 'header_img', 'qrcode_img', 'accountName', 'original', 'country', 'province', 'city', 'signature', 'access_token', 'hash', 'token', 'EncodingAESKey', 'username', 'password', 'key', 'secret', 'welcome', 'default'], 'safe'],
+            [['name', 'header_img', 'qrcode_img', 'account', 'original', 'country', 'province', 'city', 'signature', 'access_token', 'hash', 'token', 'EncodingAESKey', 'username', 'password', 'key', 'secret', 'welcome', 'default'], 'safe'],
         ];
     }
 
@@ -60,7 +60,7 @@ class PublicAccountSearch extends PublicAccount
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'accountName', $this->accountName]);
+            ->andFilterWhere(['like', 'account', $this->account]);
         return $dataProvider;
     }
 }

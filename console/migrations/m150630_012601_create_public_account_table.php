@@ -15,7 +15,7 @@ class m150630_012601_create_public_account_table extends Migration {
 				'level'=>Schema::TYPE_SMALLINT.' NOT NULL DEFAULT 0',
 				'header_img'=>Schema::TYPE_STRING.'(256)',
 				'qrcode_img'=>Schema::TYPE_STRING.'(256)',
-				'accountName'=>Schema::TYPE_STRING.'(256) NOT NULL',
+				'account'=>Schema::TYPE_STRING.'(256) NOT NULL',
 				'original'=>Schema::TYPE_STRING.'(63) NOT NULL',
 				'country'=>Schema::TYPE_STRING.'(63)',
 				'province'=>Schema::TYPE_STRING.'(63)',

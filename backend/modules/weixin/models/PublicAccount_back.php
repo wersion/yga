@@ -6,9 +6,6 @@ use Yii;
 use yii\web\UploadedFile;
 use linslin\yii2\curl\Curl;
 use common\util\Util;
-use common\util\Communication;
-use backend\util\WocxUtil;
-use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%public_account}}".
@@ -73,7 +70,7 @@ class PublicAccount extends \yii\db\ActiveRecord
     public function scenarios(){
     	$scenarios = parent::scenarios();
     	$scenarios['onekey'] = ['type','username','password'];
-    	$scenarios['normal'] = ['name', 'account', 'original', 'hash', 'token', 'EncodingAESKey', 'key', 'secret'];
+    	$scenarios['normal'] = ['name', 'account', 'original', 'access_token', 'hash', 'token', 'EncodingAESKey', 'key', 'secret'];
     	return $scenarios;
     }
     
@@ -84,7 +81,7 @@ class PublicAccount extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'account', 'original', 'hash', 'token', 'EncodingAESKey', 'key', 'secret'], 'required'],
+            [['name', 'account', 'original','username','password','access_token', 'hash', 'token', 'EncodingAESKey', 'key', 'secret'], 'required'],
             [['type', 'level'], 'integer'],
             [['signature', 'welcome', 'default'], 'string'],
             [['name', 'original', 'country', 'province', 'city', 'hash', 'token', 'EncodingAESKey', 'key', 'secret'], 'string', 'max' => 63],
@@ -139,36 +136,6 @@ class PublicAccount extends \yii\db\ActiveRecord
     	return true;
     }
     
-    public function normal(){
-    	if($this->type == 1){//微信
-    		$this->common();
-    	}else if($this->type ==2){//易信
-    		
-    	}
-    	
-    	
-    }
-    
-    public function common(){
-    	$this->hash = WocxUtil::random(5);
-    	$this->token = WocxUtil::random(32);
-    	$this->EncodingAESKey = WocxUtil::random(43);
-    	$this->save();
-    	$qrcode_img = UploadedFile::getInstance($this, 'qrcode_img');
-    	if($qrcode_img && $this->checkFile($qrcode_img)){
-    		$qrcode_img->saveAs("upload/weixin/qrcode_{$this->id}{$qrcode_img->extension}");
-    		$this->qrcode_img = "upload/weixin/qrcode_{$this->id}{$qrcode_img->extension}";
-    	}
-    	$header_img = UploadedFile::getInstance($this, 'header_img');
-    	if($header_img && $this->checkFile($this->headimg)){
-    		$header_img->saveAs("upload/weixin/headimg_{$this->id}{$header_img->extension}");
-    		$this->qrcode_img = "upload/weixin/headimg_{$this->id}{$header_img->extension}";
-    	}
-    	return $this->save();
-    }
-    
-    
-    
     public function onekey(){
     	if($this->type == 1){//微信
     		$loginstatus = $this->account_weixin_login($this->username, $this->password, '');
@@ -193,7 +160,18 @@ class PublicAccount extends \yii\db\ActiveRecord
     			
     			
     		}else{//新建
-    			$this->common();
+    			$this->hash = WocxUtil::random(5);
+    			$this->token = WocxUtil::random(32);
+    			$this->EncodingAESKey = WocxUtil::random(43);
+    			$this->save();
+    			$qrcode_img = UploadedFile::getInstance($this, 'qrcode_img');
+    			if($qrcode_img && $this->checkFile($qrcode_img)){
+    				$qrcode_img->saveAs('upload/weixin/qrcode_'.$this->id.'.'.$qrcode_img->extension);
+    			}
+    			$header_img = UploadedFile::getInstance($this, 'header_img');
+    			if($header_img && $this->checkFile($this->headimg)){
+    				$header_img->saveAs('upload/weixin/headimg_'.$this->id.'.'.$header_img->extension);
+    			}
     			if (!empty($loginstatus)) {
     				//尝试一键接入，关闭编辑模式，开启开发模式，接入API地址
     				if ($this->type == 1) {
@@ -234,13 +212,14 @@ function account_weixin_interface($username, $hash = '', $token = '') {
 }
     
     
-function account_weixin_http($username, $url, $post = '') {
-	$cache = Yii::$app->cache;
-	return Communication::ihttp_request($url . '&token=' . $cache->get($username.'_token'), 
-			$post, array('CURLOPT_COOKIE' => $cache->get($username.'_cookie'), 
-					'CURLOPT_REFERER' => 
-	self::WEIXIN_ROOT . '/advanced/advanced?action=edit&t=advanced/edit&token='.$cache->get($username.'_token'),));
-}
+     function account_weixin_http($username, $url, $post = '') {
+    	$session = Yii::$app->session;
+    	$curl = new Curl();
+    	return $curl->setOption(CURLOPT_COOKIE, $session->get($username.'_cookie'))
+    		->setOption(CURLOPT_REFERER, self::WEIXIN_ROOT . '/advanced/advanced?action=edit&t=advanced/edit&token='.$session->get($username.'_token'))
+    		->setOption(CURLOPT_POSTFIELDS, [
+    			http_build_query($post)])->post($url);
+    }
     
     /**
      * 获取微信内容
@@ -253,16 +232,16 @@ function account_weixin_http($username, $url, $post = '') {
     		return array();
     	}
     	$info = array();
-//     	preg_match('/fakeid=([0-9]+)/', $response['content'], $match);
-//     	$fakeid = $match[1];
-//     	$image = $this->account_weixin_http($username, self::WEIXIN_ROOT . '/misc/getheadimg?fakeid='.$fakeid);
-//     	if (!Util::is_error($image) && !empty($image['content'])) {
-//     		$info['headimg'] = $image['content'];
-//     	}
-//     	$image = $this->account_weixin_http($username, self::WEIXIN_ROOT . '/misc/getqrcode?fakeid='.$fakeid.'&style=1&action=download');
-//     	if (!is_error($image) && !empty($image['content'])) {
-//     		$info['qrcode'] = $image['content'];
-//     	}
+    	preg_match('/fakeid=([0-9]+)/', $response['content'], $match);
+    	$fakeid = $match[1];
+    	$image = $this->account_weixin_http($username, self::WEIXIN_ROOT . '/misc/getheadimg?fakeid='.$fakeid);
+    	if (!Util::is_error($image) && !empty($image['content'])) {
+    		$info['headimg'] = $image['content'];
+    	}
+    	$image = $this->account_weixin_http($username, self::WEIXIN_ROOT . '/misc/getqrcode?fakeid='.$fakeid.'&style=1&action=download');
+    	if (!is_error($image) && !empty($image['content'])) {
+    		$info['qrcode'] = $image['content'];
+    	}
     	preg_match('/(gh_[a-z0-9A-Z]+)/', $response['meta'], $match);
     	$info['original'] = $match[1];
     	preg_match('/名称([\s\S]+?)<\/li>/', $response['content'], $match);
@@ -286,74 +265,80 @@ function account_weixin_http($username, $url, $post = '') {
     }
     
     
- /**
-  * 
-  * @param string $username
-  * @param string $password
-  * @param string $imgcode
-  * @return boolean
-  */   
-function account_weixin_login($username = '', $password = '', $imgcode = '') {
-	$loginurl = self::WEIXIN_ROOT . '/cgi-bin/login?lang=zh_CN';	
-	$post = array(
-		'username' => $username,
-		'pwd' => $password,
-		'imgcode' => $imgcode,
-		'f' => 'json',	
-	);
-	$response = Communication::ihttp_request($loginurl, $post, array('CURLOPT_REFERER' => 'https://mp.weixin.qq.com/'));
-	if (Util::is_error($response)) {
-		return false;
-	}
-	$data = json_decode($response['content'], true);
-	if ($data['base_resp']['ret'] == 0) {
+    
+    /**
+     * 检测微信登陆
+     * @param string $username
+     * @param string $password
+     * @param string $imgcode
+     * @return boolean
+     */
+    public function account_weixin_login($username = '', $password = '', $imgcode = '') {
+    	$loginurl = self::WEIXIN_ROOT . '/cgi-bin/login?lang=zh_CN';
+    	$post = array(
+    			'username' => $username,
+    			'pwd' => $password,
+    			'imgcode' => $imgcode,
+    			'f' => 'json',
+    	);
+    	$curl = new Curl();
+    	$response = $curl->setOption(CURLOPT_RETURNTRANSFER, true)->setOption(CURLOPT_HEADER, true)
+    				  ->setOption(CURLOPT_SSL_VERIFYHOST, false)->setOption(CURLOPT_SSL_VERIFYPEER, false)
+    				  ->setOption(CURLOPT_SSLVERSION, true)->setOption(CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:9.0.1) Gecko/20100101 Firefox/9.0.1')
+    				  ->setOption(CURLOPT_POSTFIELDS, http_build_query($post))
+    				  ->setOption(CURLOPT_REFERER, self::WEIXIN_ROOT)
+    	->post($loginurl,false);
+    	if (Util::is_error($response)) {
+    		return false;
+    	}
+    	$data = json_decode($response['content'], true);
+    	if ($data['base_resp']['ret'] == 0) {
 		preg_match('/token=([0-9]+)/', $data['redirect_url'], $match);
-		$cache = Yii::$app->cache;
-		$cache->set($username.'_token', $match[1]);
-		$cache->set($username.'_cookie', implode('; ', $response['headers']['Set-Cookie']));
-	} else {
-// 		switch ($data['ErrCode']) {
-// 			case "-1":
-// 				$msg = "系统错误，请稍候再试。";
-// 				break;
-// 			case "-2":
-// 				$msg = "微信公众帐号或密码错误。";
-// 				break;
-// 			case "-3":
-// 				$msg = "微信公众帐号密码错误，请重新输入。";
-// 				break;
-// 			case "-4":
-// 				$msg = "不存在该微信公众帐户。";
-// 				break;
-// 			case "-5":
-// 				$msg = "您的微信公众号目前处于访问受限状态。";
-// 				break;
-// 			case "-6":
-// 				$msg = "登录受限制，需要输入验证码，稍后再试！";
-// 				break;
-// 			case "-7":
-// 				$msg = "此微信公众号已绑定私人微信号，不可用于公众平台登录。";
-// 				break;
-// 			case "-8":
-// 				$msg = "微信公众帐号登录邮箱已存在。";
-// 				break;
-// 			case "-200":
-// 				$msg = "因您的微信公众号频繁提交虚假资料，该帐号被拒绝登录。";
-// 				break;
-// 			case "-94":
-// 				$msg = "请使用微信公众帐号邮箱登陆。";
-// 				break;
-// 			case "10":
-// 				$msg = "该公众会议号已经过期，无法再登录使用。";
-// 				break;
-// 			default:
-// 				$msg = "未知的返回，微信缓存冲突！清理缓存或换个浏览器试试！。";
-// 		}
-// 		message($msg, referer(), 'error');
-		return false;
-	}
-	return true;
-}
+		$session = \Yii::$app->session;
+		$session->set($username.'_token', $match[1]);
+		$session->setCookieParams([$username.'_cookie'=>implode('; ', $response['headers']['Set-Cookie'])]);
+		} else {
+    		switch ($data['ErrCode']) {
+    			case "-1":
+    				$msg = "系统错误，请稍候再试。";
+    				break;
+    			case "-2":
+    				$msg = "微信公众帐号或密码错误。";
+    				break;
+    			case "-3":
+    				$msg = "微信公众帐号密码错误，请重新输入。";
+    				break;
+    			case "-4":
+    				$msg = "不存在该微信公众帐户。";
+    				break;
+    			case "-5":
+    				$msg = "您的微信公众号目前处于访问受限状态。";
+    				break;
+    			case "-6":
+    				$msg = "登录受限制，需要输入验证码，稍后再试！";
+    				break;
+    			case "-7":
+    				$msg = "此微信公众号已绑定私人微信号，不可用于公众平台登录。";
+    				break;
+    			case "-8":
+    				$msg = "微信公众帐号登录邮箱已存在。";
+    				break;
+    			case "-200":
+    				$msg = "因您的微信公众号频繁提交虚假资料，该帐号被拒绝登录。";
+    				break;
+    			case "-94":
+    				$msg = "请使用微信公众帐号邮箱登陆。";
+    				break;
+    			case "10":
+    				$msg = "该公众会议号已经过期，无法再登录使用。";
+    				break;
+    			default:
+    				$msg = "未知的返回，微信缓存冲突！清理缓存或换个浏览器试试！。";
+    		}
+    		return false;
+    	}
+    	return true;
+    }
     
     
     

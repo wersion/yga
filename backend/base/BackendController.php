@@ -12,10 +12,8 @@ class BackendController extends Controller {
 	
 	public $session;
 	public $auth;
+	public $request;
 	
-	public function setFlash($status,$message){
-		$this->session->setFlash($status,$message);
-	}
 	public function behaviors() {
 		return [ 
 				'access' => [ 
@@ -52,6 +50,7 @@ class BackendController extends Controller {
 	public function init() {
 		$this->session = \Yii::$app->session;
 		$this->auth = Yii::$app->authManager;
+		$this->request = Yii::$app->request;
 		Yii::$container->set ( 'yii\widgets\LinkPager', [ 
 				'firstPageLabel' => '首页','lastPageLabel' => '尾页','prevPageLabel' => '上页','nextPageLabel' => '下页','hideOnSinglePage' => false,'options' => [ 
 						'class' => 'pagination pull-right' 

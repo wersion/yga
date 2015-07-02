@@ -5,8 +5,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\weixin\models\PublicAccount */
 
-$this->title = 'Update Public Account: ' . ' ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Public Accounts', 'url' => ['index']];
+$this->title = '更新页面';
+$this->params['breadcrumbs'][] = ['label' => '公众号管理', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>

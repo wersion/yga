@@ -133,9 +133,9 @@ class UserController extends BackendController {
 		$modle = $this->findModel ( $id );
 		$modle->delete ();
 		if($modle->errors){
-			$this->setFlash('fail', $modle->errors);
+			$this->session->setFlash('fail', $modle->errors);
 		}else{
-			$this->setFlash('success');
+			$this->session->setFlash('success');
 		}
 		return $this->redirect ( [ 
 				'index' 
