@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ['attribute'=>'type',
              'label'=>'公众号类型',
              'content'=>function($model){
-             return $model->type == 1?'微信':'易信';
+             return $model->type == 0?'微信':'易信';
             }
             ],
             [

@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'name',
           	['attribute'=>'type',
-             'value'=> $model->type == 1?'微信':'易信'
+             'value'=> $model->type == 0?'微信':'易信'
             ],
             ['attribute'=>'level',
              'value'=>$model->level == 0?'普通订阅号':$model->level==1?'认证订阅号/普通服务号':'认证服务号'

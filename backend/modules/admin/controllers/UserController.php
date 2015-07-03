@@ -12,6 +12,8 @@ use backend\modules\admin\models\AuthItem;
 use backend\modules\weixin\models\Wechats;
 use backend\modules\admin\models\User;
 use backend\modules\admin\models\UserForm;
+use backend\modules\weixin\models\PublicAccount;
+use backend\modules\weixin\models\WeixinUser;
 
 /**
  * UserController implements the CRUD actions for TAdmUser model.
@@ -46,18 +48,20 @@ class UserController extends BackendController {
 	}
 	
 	/**
-	 * Creates a new TAdmUser model.
-	 * If creation is successful, the browser will be redirected to the 'view' page.
-	 * 
 	 * @return mixed
 	 */
 	public function actionCreate() {
 		$model = new UserForm();
 		$allRoles = AuthItem::findAll(['type'=>AuthItem::TYPE_ROLE]);
+		$selectedRoles =  [];
+		$selectedAccounts = [];
+		$accounts = $this->getAccounts();
 		if($model->load(Yii::$app->request->post())){
 			$selectedRoles = Util::getPostValue('selectedRoles');
+			$selectedAccounts = Util::getPostValue('selectedAccounts');
 			if($model->save()){
 				$model->assgin($allRoles, $selectedRoles);
+				$model->assginAccount($accounts,$selectedAccounts);
 			}
 			$this->session->setFlash('success');
 			return $this->redirect ( [
@@ -66,14 +70,15 @@ class UserController extends BackendController {
 		}else{
 			return $this->render ( 'create', [
 					'model' => $model,
-					'roles'=>$allRoles
+					'roles'=>$allRoles,
+					'accounts'=>$accounts,
+					'selectedRoles'=>$selectedRoles,
+					'selectedAccounts'=>$selectedAccounts
 			] );
 		}
 	}
 	
 	/**
-	 * Updates an existing TAdmUser model.
-	 * If update is successful, the browser will be redirected to the 'view' page.
 	 * 
 	 * @param string $id        	
 	 * @return mixed
@@ -81,21 +86,28 @@ class UserController extends BackendController {
 	public function actionUpdate($id) {
 		$model = $this->findModel ( $id );
 		$allRoles = AuthItem::findAll(['type'=>AuthItem::TYPE_ROLE]);
+		$accounts = $this->getAccounts();
 		$selectedRoles = $this->auth->getRolesByUser($model->id);
+		$selectedAccounts = $model->getWeixinUsers()->all();
 		if ($model->load ( Yii::$app->request->post () )) {
 			$selectedRoles = Util::getPostValue('selectedRoles');
+			$selectedAccounts = Util::getPostValue('selectedAccounts');
 			if($model->save()){
-				//WOCX 等关于角色操作处理完回来
 				$model->assgin($allRoles, $selectedRoles);
+				$accounts = PublicAccount::find()->all();
+				$model->assginAccount($accounts,$selectedAccounts);
 			}
-			return $this->redirect ( [ 
-					'view','id' => $model->id 
-			] );
+			
+// 			return $this->redirect ( [ 
+// 					'view','id' => $model->id 
+// 			] );
 		} else {
 			return $this->render ( 'update', [ 
 					'model' => $model,
 					'roles' => $allRoles,
-					'selectedRoles' => $selectedRoles
+					'selectedRoles' => $selectedRoles,
+					'accounts' => $accounts,
+					'selectedAccounts'=>$selectedAccounts
 			] );
 		}
 	}
@@ -156,5 +168,14 @@ class UserController extends BackendController {
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+    
+    protected function getAccounts(){
+    	$results = [];
+    	$accounts = PublicAccount::find()->all();
+    	foreach($accounts as $account){
+    		$results[$account->type][] = $account;
+    	}
+    	return  $results;
     }
 }

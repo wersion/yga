@@ -12,6 +12,10 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="tadm-user-update">
     <?= $this->render('_form', [
         'model' => $model,
+    	 'roles'=>$roles,
+    	 'selectedRoles'=>$selectedRoles,
+    	'accounts'=>$accounts,
+    	'selectedAccounts'=>$selectedAccounts
     ]) ?>
 
 </div>

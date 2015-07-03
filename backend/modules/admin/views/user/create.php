@@ -13,7 +13,10 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="tadm-user-create">
     <?= $this->render('_form', [
         'model' => $model,
-    	'roles' => $roles
+    	'roles' => $roles,
+    	'accounts'=>$accounts,
+    	'selectedRoles'=>$selectedRoles,
+    	'selectedAccounts'=>$selectedAccounts
     ]) ?>
 
 </div>

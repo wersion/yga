@@ -11,7 +11,7 @@ class UserForm extends User{
 	 */
 	public function rules(){
 		return [
-				[['username', 'password', 'password_repeat', 'status'], 'required'],
+				[['username', 'password', 'status'], 'required'],
 				['password_repeat', 'compare', 'compareAttribute' => 'password'],
 		];
 	}
@@ -29,8 +29,6 @@ class UserForm extends User{
 				'status' => '状态',
 		];
 	}
-	
-	
 }
 
 ?>

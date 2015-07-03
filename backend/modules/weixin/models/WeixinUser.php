@@ -61,4 +61,7 @@ class WeixinUser extends \yii\db\ActiveRecord
     {
         return $this->hasOne(PublicAccount::className(), ['id' => 'w_id']);
     }
+    
+    
+    
 }

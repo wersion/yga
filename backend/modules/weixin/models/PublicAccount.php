@@ -354,8 +354,4 @@ function account_weixin_login($username = '', $password = '', $imgcode = '') {
 	}
 	return true;
 }
-    
-    
-    
-    
 }

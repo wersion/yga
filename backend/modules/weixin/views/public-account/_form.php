@@ -26,7 +26,7 @@ use yii\helpers\Url;
     ]); ?>
     <?= Html::hiddenInput('isNormal','normal')?>
     <?= $form->field($model, 'name')->hint('您可以给此公众号起一个名字, 方便下次修改和查看')->textInput(['maxlength' => true])?>
-    <?= $form->field($model, 'type')->dropDownList(['1'=>'微信公众平台','2'=>'易信公众平台'])->label('公众号类型')?>
+    <?= $form->field($model, 'type')->dropDownList(['0'=>'微信公众平台','1'=>'易信公众平台'])->label('公众号类型')?>
     <?= $form->field($model, 'level')->dropDownList(['0'=>'普通订阅号','1'=>'认证订阅号/普通服务号','2'=>'认证服务号'])->label('公众号接口权限') ?>
     <?= $form->field($model, 'key')->label('公众号AppId')->hint('请填写微信公众平台后台的AppId')?>
     <?= $form->field($model, 'secret')->label('公众号AppSecret')->hint('请填写微信公众平台后台的AppSecret, 只有填写这两项才能管理自定义菜单')?>
@@ -44,7 +44,7 @@ use yii\helpers\Url;
     <?= $form->field($model, 'qrcode_img')->widget(FileInput::classname(), [
     'options' => ['accept' => 'image/*','multiple' => true],'pluginOptions' => [
         'initialPreview'=>[
-            Html::img(yii::$app->urlManager->createAbsoluteUrl("upload/weixin/qrcode_{$model->id}.jpg"), ['class'=>'file-preview-image']),
+            Html::img(yii::$app->urlManager->createAbsoluteUrl($model->qrcode_img != null ?"{$model->qrcode_img}":'upload/default.jpg'), ['class'=>'file-preview-image']),
                 ],
         'uploadExtraData' => [
             'album_id' => 20,
@@ -57,7 +57,7 @@ use yii\helpers\Url;
     <?= $form->field($model, 'header_img')->widget(FileInput::classname(), [
     'options' => ['accept' => 'image/*','multiple' => true],'pluginOptions' => [
         'initialPreview'=>[
-            Html::img("upload/weixin/headimg_{$model->id}.jpg", ['class'=>'file-preview-image']),
+            Html::img(Yii::$app->urlManager->createUrl($model->header_img != null?"{$model->header_img}":'upload/default.jpg'), ['class'=>'file-preview-image']),
                 ],
         'uploadExtraData' => [
             'album_id' => 20,

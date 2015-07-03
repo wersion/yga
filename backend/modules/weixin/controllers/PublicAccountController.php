@@ -58,9 +58,8 @@ class PublicAccountController extends BackendController {
 						'view','id' => $model->id
 				] );
 			}else{
-// 				$this->session->setFlash('fail',\implode(',', $model->errors));
-	\var_dump($model->errors);
-// 				return $this->redirect('index');
+				$this->session->setFlash('fail',\implode(',', $model->errors));
+				return $this->redirect('index');
 			}
 			
 		} else {
