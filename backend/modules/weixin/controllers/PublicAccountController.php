@@ -52,6 +52,7 @@ class PublicAccountController extends BackendController {
 			}else{//一键模式
 				$model->onekey();
 			}
+			$model->save();
 			if($model->id){
 				$this->session->setFlash('success');
 				return $this->redirect ( [

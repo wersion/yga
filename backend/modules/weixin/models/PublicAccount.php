@@ -140,9 +140,9 @@ class PublicAccount extends \yii\db\ActiveRecord
     }
     
     public function normal(){
-    	if($this->type == 1){//微信
+    	if($this->type == self::TYPE_WEIXIN){//微信
     		$this->common();
-    	}else if($this->type ==2){//易信
+    	}else if($this->type ==self::TYPE_YIXIN){//易信
     		
     	}
     	

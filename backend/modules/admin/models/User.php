@@ -187,7 +187,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface{
     
     public function beforeSave($insert){
     	$security = \Yii::$app->security;
-    	if($this->isNewRecord || $this->password_hash != $security->generatePasswordHash($this->password_hash)){
+    	if($this->isNewRecord || $this->getScenario() == 'changePassword'){
     		$this->password_hash = $security->generatePasswordHash($this->password);
     		$this->auth_key = $security->generateRandomString();
     		$this->password_reset_token = $security->generateRandomString().'_'.\time();
@@ -264,7 +264,8 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface{
     			// 已经分配给该用户了，则需要将其取消关联
     			if (isset($existedItems[$itemID])){
 				    $weixinUser = WeixinUser::findOne(['w_id'=>$itemID,'user_id'=>$this->id]);
-				    $weixinUser->delete();				
+				    $weixinUser->delete();	
+				    \var_dump($weixinUser->errors);			
     			}
     		}
     	}

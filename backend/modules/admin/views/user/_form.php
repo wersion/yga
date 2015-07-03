@@ -6,7 +6,6 @@ use yii\helpers\ArrayHelper;
 ?>
 
 <div class="tadm-user-form">
-
     <?php $form = ActiveForm::begin(); ?>
    <?= $form->field($model,'username')->textInput() ?>
 <?php 
@@ -29,10 +28,10 @@ use yii\helpers\ArrayHelper;
 		foreach ($accounts as $type => $as){
 			if($type == 0){
 				echo Html::label('微信公众账号:',null,['class'=>'control-label']);
-				echo Html::checkboxList('selectedAccounts',array_keys(ArrayHelper::map($selectedAccounts, 'id', 'name')),ArrayHelper::map($as, 'id', 'name'));
+				echo Html::checkboxList('selectedAccounts',array_keys(ArrayHelper::map($selectedAccounts, 'w_id', 'user_id')),ArrayHelper::map($as, 'id', 'name'));
 			}else{
 				echo Html::label('易信公众账号：',null,['class'=>'control-label']);
-				echo Html::checkboxList('selectedAccounts',array_keys(ArrayHelper::map($selectedAccounts, 'id', 'name')),ArrayHelper::map($as, 'id', 'name'));
+				echo Html::checkboxList('selectedAccounts',array_keys(ArrayHelper::map($selectedAccounts, 'w_id', 'user_id')),ArrayHelper::map($as, 'id', 'name'));
 			}		
 		}
 			?>

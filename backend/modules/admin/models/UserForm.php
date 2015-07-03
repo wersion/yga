@@ -29,6 +29,21 @@ class UserForm extends User{
 				'status' => '状态',
 		];
 	}
+	
+	public function  scenarios(){
+		
+		$scenarios = parent::scenarios();
+		$scenarios['changePassword'] = ['password',];
+		$scenarios['update'] = ['username','status'];
+		return $scenarios;
+	}
+	
+	
+	
+	
+	
+	
+	
 }
 
 ?>

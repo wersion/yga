@@ -61,6 +61,7 @@ class UserController extends BackendController {
 			$selectedAccounts = Util::getPostValue('selectedAccounts');
 			if($model->save()){
 				$model->assgin($allRoles, $selectedRoles);
+				$accounts = PublicAccount::find()->all();
 				$model->assginAccount($accounts,$selectedAccounts);
 			}
 			$this->session->setFlash('success');
@@ -97,11 +98,13 @@ class UserController extends BackendController {
 				$accounts = PublicAccount::find()->all();
 				$model->assginAccount($accounts,$selectedAccounts);
 			}
-			
+			\var_dump($model->errors);
 // 			return $this->redirect ( [ 
 // 					'view','id' => $model->id 
 // 			] );
 		} else {
+			
+			
 			return $this->render ( 'update', [ 
 					'model' => $model,
 					'roles' => $allRoles,
