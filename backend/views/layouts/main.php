@@ -35,44 +35,35 @@ AppAsset::register($this);
 
         <div class="navbar-header pull-right" role="navigation">
             <?php 
-            	echo NavX::widget([
-    'options'=>['class'=>'nav ace-nav'],
-    'items' => [
-    		['label' => Yii::$app->session->get('account')?Yii::$app->session->get('account'):'公众账号', 
-    				'active'=>true,'options'=>['class'=>'purple pull-right'],
-    		'items' => function(){
-					$datas = [];
-					$results = Yii::$app->getCache()->get('accounts');
-    			foreach ($results as $type=>$account){
-    				[
-    				['label' => 'Submenu 111', 'options'=>['class'=>'pull-left'],
-    						'items' => [
-    								['label' => 'Action', 'url' => '#'],
-    								['label' => 'Another action', 'url' => '#'],
-    								['label' => 'Something else here', 'url' => '#'],
-    								'<li class="divider"></li>',
-    								['label' => 'Separated link', 'url' => '#'],
-    						]],
-    						['label' => 'Submenu 2', 'options'=>['class'=>'pull-left'],'items' => [
-    								['label' => 'Action', 'url' => '#'],
-    								['label' => 'Another action', 'url' => '#'],
-    								['label' => 'Something else here', 'url' => '#'],
-    								'<li class="divider"></li>',
-    								['label' => 'Separated link', 'url' => '#'],
-    						]],
-    						]
-    			}
-    		
-    		return $datas;
+            $results = Yii::$app->getCache()->get('accounts');
+            if(!empty($results)){
+            	foreach ($results as $type=>$as){
+            		foreach ($as as $account){
+            			$subMenuAccounts[] = ['label' => $account->name,
+            					'url' => Yii::$app->urlManager->createUrl(['weixin/public-account/change','id'=>$account->id])];
+            		}
+            		$subMenuItems[] = ['label' => ($type ==0?'微信公众账号':'易信公众账号'),
+            				'options'=>['class'=>'pull-left'],
+            				'items' => $subMenuAccounts];
+            		$subMenuAccounts = null;
             	}
-    		],
-    		['label' => Yii::$app->user->identity->username, 'active'=>true,'options'=>['class'=>'light-blue pull-right'],
-    		'items' => [
-    				['label' => '修改密码', 'url' => '#'],
-    				['label' => '退出', 'url' => '#'],
-    		]],
-    ]
-]);
+            	$menuItems[] = ['label' => Yii::$app->session->get('account')?Yii::$app->session->get('account'):'公众账号',
+            	'active'=>true,'options'=>['class'=>'purple pull-right'],
+            			'items' => $subMenuItems];
+            }
+            $menuItems[] = 
+            		['label' => Yii::$app->user->identity->username,'active'=>true,
+            				'options'=>['class'=>'light-blue pull-right'],
+            				'items' => [
+            						['label' => '修改密码', 'url' => Yii::$app->urlManager->createUrl(['admin/user/changepwd'])],
+            						['label' => '退出', 'url' => Yii::$app->urlManager->createUrl(['user/logout'])],
+            				]];
+            echo NavX::widget([
+            		'options'=>['class'=>'nav ace-nav'],
+            		'items' => $menuItems,
+            ]);
+            
+            	
             ?>
             <!-- /.ace-nav -->
             

@@ -10,14 +10,9 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * PublicAccountController implements the CRUD actions for PublicAccount model.
  */
 class PublicAccountController extends BackendController {
-	/**
-	 * Lists all PublicAccount models.
-	 * 
-	 * @return mixed
-	 */
+	
 	public function actionIndex() {
 		$searchModel = new PublicAccountSearch ();
 		$dataProvider = $searchModel->search ( Yii::$app->request->queryParams );
@@ -121,4 +116,13 @@ class PublicAccountController extends BackendController {
 			throw new NotFoundHttpException ( 'The requested page does not exist.' );
 		}
 	}
+	
+	public function change($id){
+		$account = PublicAccount::findOne(['id'=>$id]);
+		Yii::$app->getSession()->set('account_name', $account->name);
+		$this->session->setFlash('success');
+		return $this->goHome();
+	}
+	
+	
 }
