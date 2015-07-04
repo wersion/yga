@@ -1,4 +1,5 @@
 <?php
+
 namespace backend\controllers;
 
 use Yii;
@@ -8,17 +9,17 @@ use yii\caching\DbDependency;
 use backend\models\TMenu;
 use yii\web\Controller;
 use yii\filters\AccessControl;
+use backend\modules\weixin\models\PublicAccount;
 
 class HomeController extends Controller {
 	public function behaviors() {
 		return [ 
 				'access' => [ 
-						'class' => AccessControl::className (),
-						'rules' => [ 
+						'class' => AccessControl::className (),'rules' => [ 
 								[ 
-										'allow' => true,
-										'roles' => [ '@' 
-								] 
+										'allow' => true,'roles' => [ 
+												'@' 
+										] 
 								],[ 
 										'actions' => [ 
 												'error' 
@@ -47,6 +48,16 @@ class HomeController extends Controller {
 		];
 	}
 	public function actionIndex() {
+		$cache = Yii::$app->getCache ();
+		if (empty ( $cache->get ( 'accounts' ) )) {
+			$results = [];
+		$accounts = PublicAccount::find()->all();
+		foreach($accounts as $account){
+			$results[$account->type][] = $account;
+		}
+		
+		Yii::$app->getCache()->set('accounts', $results);
+	}		
 		return $this->render ( 'index' );
 	}
 }

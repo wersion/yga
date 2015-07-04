@@ -26,7 +26,8 @@
     "yiisoft/yii2-imagine": "*",
     "kartik-v/yii2-widgets": "*",
     "kucha/ueditor": "*",
-    "linslin/yii2-curl": "*"
+    "linslin/yii2-curl": "*",
+    "kartik-v/yii2-nav-x": "*"
   },
   "require-dev": {
     "yiisoft/yii2-codeception": "*",
