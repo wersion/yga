@@ -40,7 +40,7 @@ class BackendController extends Controller {
 									'user/login' 
 							] );
 						} 
-				] 
+				]
 		];
 	}
 	

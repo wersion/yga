@@ -36,12 +36,11 @@ class m150630_012601_create_public_account_table extends Migration {
 		
 		$this->createTable('{{%weixin_user}}', [
 				'w_id'=>Schema::TYPE_INTEGER.' NOT NULL',
-				'user_id'=>Schema::TYPE_INTEGER.' NOT NULL', 
+				'user_id'=>Schema::TYPE_INTEGER.' NOT NULL',
+				'PRIMARY KEY (w_id, user_id)',
 				'FOREIGN KEY (user_id) REFERENCES {{%user}} (id) ON DELETE CASCADE ON UPDATE CASCADE',
 				'FOREIGN KEY (w_id) REFERENCES {{%public_account}} (id) ON DELETE CASCADE ON UPDATE CASCADE',
 		],$tableOptions);
-		
-		
 	}
 	public function down() {
 		echo "m150630_012601_create_public_account_table cannot be reverted.\n";

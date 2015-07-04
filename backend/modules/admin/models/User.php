@@ -9,6 +9,8 @@ use yii\rbac\Role;
 use common\util\Util;
 use backend\modules\weixin\models\WeixinUser;
 use yii\helpers\ArrayHelper;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "{{%user}}".
@@ -52,6 +54,19 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface{
         ];
     }
 
+    public function behaviors(){
+    	return [
+    			['class' => TimestampBehavior::className(),
+    			'attributes' => [
+    				ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+    				ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+    					],
+    			],
+    	];
+    }
+    
+    
+    
     /**
      * @inheritdoc
      */
@@ -187,7 +202,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface{
     
     public function beforeSave($insert){
     	$security = \Yii::$app->security;
-    	if($this->isNewRecord || $this->getScenario() == 'changePassword'){
+    	if($this->isNewRecord || $this->getScenario() == 'chgpwd'){
     		$this->password_hash = $security->generatePasswordHash($this->password);
     		$this->auth_key = $security->generateRandomString();
     		$this->password_reset_token = $security->generateRandomString().'_'.\time();
@@ -240,39 +255,14 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface{
     	if ($selectedAccounts == null){
     		$selectedAccounts = [];
     	}
-    	//获取该用户已经分配好的公众账号列表
-    	$existedItems = $this->getWeixinUsers()->all();
-    	$existedItems = array_keys(ArrayHelper::map($existedItems, 'id', 'name'));
-    	foreach ( $allAccounts as $item ){
-    		$itemID = $item['id'];
-    		// 如果选择该微信
-    		if (in_array($itemID, $selectedAccounts)){
-    			// 已经存在，则跳过
-    			if (isset($existedItems[$itemID])){
-    				continue;
-    			}
-    			else{
-    				// 不存在，则分配给该用户
-    				$weixinUser = new WeixinUser();
-    				$weixinUser->w_id = $itemID;
-    				$weixinUser->user_id = $this->id;
-    				$weixinUser->save();
-    			}
-    		}
-    		else // 如果没选中
-    		{
-    			// 已经分配给该用户了，则需要将其取消关联
-    			if (isset($existedItems[$itemID])){
-				    $weixinUser = WeixinUser::findOne(['w_id'=>$itemID,'user_id'=>$this->id]);
-				    $weixinUser->delete();	
-				    \var_dump($weixinUser->errors);			
-    			}
-    		}
+    	//将该用户已经分配好的公众账号都删除
+    	WeixinUser::deleteAll(['user_id'=>$this->id]);
+    	//重新分配已经选择好的公众账号
+    	foreach ($selectedAccounts as $key=>$value){
+    		$weixinUser = new WeixinUser();
+    		$weixinUser->w_id = $value;
+    		$weixinUser->user_id = $this->id;
+    		$weixinUser->save();
     	}
-    	
-    	
-    	
-    	
-    	
     }
 }

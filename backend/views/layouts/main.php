@@ -79,14 +79,14 @@ AppAsset::register($this);
 
                     <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
                         <li>
-                            <a href="<?= Url::to(['user/changepwd']) ?>">
+                            <a href="<?= Yii::$app->urlManager->createUrl(['admin/user/changepwd']) ?>">
                                 <i class="icon-edit"></i>
                                 修改密码
                             </a>
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="<?= Url::to(['user/logout']) ?>">
+                            <a href="<?= Yii::$app->urlManager->createUrl(['user/logout']) ?>">
                                 <i class="icon-off"></i>
                                 退出
                             </a>

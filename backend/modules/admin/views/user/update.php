@@ -10,9 +10,6 @@ $this->params['breadcrumbs'][] = ['label' => '用户管理', 'url' => ['index']]
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tadm-user-update">
-<?php 
-			 $model->setScenario('update');
-		?>
     <?= $this->render('_form', [
         'model' => $model,
     	 'roles'=>$roles,

@@ -90,21 +90,19 @@ class UserController extends BackendController {
 		$accounts = $this->getAccounts();
 		$selectedRoles = $this->auth->getRolesByUser($model->id);
 		$selectedAccounts = $model->getWeixinUsers()->all();
+		$model->setScenario('update');
 		if ($model->load ( Yii::$app->request->post () )) {
 			$selectedRoles = Util::getPostValue('selectedRoles');
 			$selectedAccounts = Util::getPostValue('selectedAccounts');
 			if($model->save()){
-				$model->assgin($allRoles, $selectedRoles);
-				$accounts = PublicAccount::find()->all();
-				$model->assginAccount($accounts,$selectedAccounts);
+			$model->assgin($allRoles, $selectedRoles);
+			$accounts = PublicAccount::find()->all();
+ 			$model->assginAccount($accounts,$selectedAccounts);
 			}
-			\var_dump($model->errors);
-// 			return $this->redirect ( [ 
-// 					'view','id' => $model->id 
-// 			] );
+			return $this->redirect ( [ 
+					'view','id' => $model->id 
+			] );
 		} else {
-			
-			
 			return $this->render ( 'update', [ 
 					'model' => $model,
 					'roles' => $allRoles,
@@ -121,8 +119,8 @@ class UserController extends BackendController {
 	 * @return string|Response
 	 */
 	public function actionChangepwd() {
-		$model = User::findOne ( Yii::$app->user->id );
-		$model->scenario = 'chgpwd';
+		$model = UserForm::findOne (Yii::$app->user->id );
+		$model->setScenario('chgpwd');
 		if (Yii::$app->request->isPost) {
 			$model->load ( Yii::$app->request->post () );
 			if ($model->save ()) {
