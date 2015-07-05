@@ -47,7 +47,7 @@ AppAsset::register($this);
             				'items' => $subMenuAccounts];
             		$subMenuAccounts = null;
             	}
-            	$menuItems[] = ['label' => Yii::$app->session->get('account')?Yii::$app->session->get('account'):'公众账号',
+            	$menuItems[] = ['label' => Yii::$app->session->get('account_name')?Yii::$app->session->get('account_name'):'公众账号',
             	'active'=>true,'options'=>['class'=>'purple pull-right'],
             			'items' => $subMenuItems];
             }
@@ -194,6 +194,8 @@ AppAsset::register($this);
 								</li>
 							</ul>
 						</li>
+						
+						<?php if(!empty(Yii::$app->getSession()->get('account_name'))){?>
 						<li>
 							<a href="#" class="dropdown-toggle">
 								<i class="icon-desktop"></i>
@@ -3388,7 +3390,7 @@ AppAsset::register($this);
 								</li>
 						</ul>
 						</li>
-						
+						<?php }?>
 					</ul>
     <!-- /.nav-list -->
     <div class="sidebar-collapse" id="sidebar-collapse">

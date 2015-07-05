@@ -117,7 +117,7 @@ class PublicAccountController extends BackendController {
 		}
 	}
 	
-	public function change($id){
+	public function actionChange($id){
 		$account = PublicAccount::findOne(['id'=>$id]);
 		Yii::$app->getSession()->set('account_name', $account->name);
 		$this->session->setFlash('success');
