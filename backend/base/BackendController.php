@@ -7,6 +7,7 @@ use Yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use yii\web\MethodNotAllowedHttpException;
+use backend\modules\weixin\models\PublicAccount;
 
 class BackendController extends Controller {
 	
@@ -88,6 +89,22 @@ class BackendController extends Controller {
 	public function beforeAction($action) {
 		parent::beforeAction ( $action );
 		// 访问非菜单里的action时，菜单保持打开(添加角色时角色管理保持打开状态)
+		
+		$user = yii::$app->user->getIdentity();
+		if(!empty($user)){
+			$cache = Yii::$app->getCache ();
+			$cache->delete('accounts');
+			$results = [];
+			if (empty ( $cache->get ( 'accounts' ) )) {
+					
+				$accounts = PublicAccount::find()
+				->joinWith('weixinUsers')->where(['user_id' => $user->id])->all();
+				foreach($accounts as $account){
+					$results[$account->type][] = $account;
+				}
+				Yii::$app->getCache()->set('accounts', $results);
+			}
+		}
 		$refferroute = Yii::$app->request->referrer;
 		$_referrer = parse_url ( $refferroute );
 		Yii::$app->session->set ( 'referrerroute', $_referrer ['path'] );

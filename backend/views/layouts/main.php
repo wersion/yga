@@ -3,6 +3,7 @@ use backend\assets\AppAsset;
 use yii\helpers\Html;
 use kartik\widgets\Alert;
 use yii\helpers\Url;
+use kartik\nav\NavX;
 AppAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
@@ -11,13 +12,11 @@ AppAsset::register($this);
 <head>
     <meta charset="utf-8"/>
     <title><?= Yii::$app->params['webname'].'-'.(is_array($this->params['breadcrumbs'])?end($this->params['breadcrumbs']):'未定义') ?></title>
-
     <!--貌似没什么用-->
     <?= Html::cssFile('/css/font-awesome-ie7.min.css',['condition'=>'IE 7']) ?>
     <?= Html::cssFile('/css/ace-ie.min.css',['condition'=>'lte IE 8']) ?>
     <?= Html::jsFile('/js/html5shiv.js',['condition'=>'lte IE 9']) ?>
     <?= Html::jsFile('/js/respond.min.js',['condition'=>'lte IE 9']) ?>
-
     <?php $this->head() ?>
 </head>
 <body>
@@ -35,66 +34,39 @@ AppAsset::register($this);
         <!-- /.navbar-header -->
 
         <div class="navbar-header pull-right" role="navigation">
-            <ul class="nav ace-nav">
-
-                <li class="purple">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                        <i class="icon-bell-alt icon-animated-bell"></i>
-                        <span class="badge badge-important">8</span>
-                    </a>
-
-                    <ul class="pull-right dropdown-navbar navbar-pink dropdown-menu dropdown-caret dropdown-close">
-                        <li class="dropdown-header">
-                            <i class="icon-warning-sign"></i>
-                            8 Notifications
-                        </li>
-                        <li>
-                            <a href="#">
-                                <div class="clearfix">
-                                    <span class="pull-left">
-                                        <i class="btn btn-xs no-hover btn-pink icon-comment"></i>
-                                        New Comments
-                                    </span>
-                                    <span class="pull-right badge badge-info">+12</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                查看所有通知
-                                <i class="icon-arrow-right"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="light-blue">
-                    <a data-toggle="dropdown" href="#" class="dropdown-toggle">
-                            <span class="user-info">
-                                <small>Welcome,</small>
-                                <?= Yii::$app->user->identity->username ?>
-                            </span>
-                        <i class="icon-caret-down"></i>
-                    </a>
-
-                    <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
-                        <li>
-                            <a href="<?= Yii::$app->urlManager->createUrl(['admin/user/changepwd']) ?>">
-                                <i class="icon-edit"></i>
-                                修改密码
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="<?= Yii::$app->urlManager->createUrl(['user/logout']) ?>">
-                                <i class="icon-off"></i>
-                                退出
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+            <?php 
+            $results = Yii::$app->getCache()->get('accounts');
+            if(!empty($results)){
+            	foreach ($results as $type=>$as){
+            		foreach ($as as $account){
+            			$subMenuAccounts[] = ['label' => $account->name,
+            					'url' => Yii::$app->urlManager->createUrl(['weixin/public-account/change','id'=>$account->id])];
+            		}
+            		$subMenuItems[] = ['label' => ($type ==0?'微信公众账号':'易信公众账号'),
+            				'options'=>['class'=>'pull-left'],
+            				'items' => $subMenuAccounts];
+            		$subMenuAccounts = null;
+            	}
+            	$menuItems[] = ['label' => Yii::$app->session->get('account_name')?Yii::$app->session->get('account_name'):'公众账号',
+            	'active'=>true,'options'=>['class'=>'purple pull-right'],
+            			'items' => $subMenuItems];
+            }
+            $menuItems[] = 
+            		['label' => Yii::$app->user->identity->username,'active'=>true,
+            				'options'=>['class'=>'light-blue pull-right'],
+            				'items' => [
+            						['label' => '修改密码', 'url' => Yii::$app->urlManager->createUrl(['admin/user/changepwd'])],
+            						['label' => '退出', 'url' => Yii::$app->urlManager->createUrl(['user/logout'])],
+            				]];
+            echo NavX::widget([
+            		'options'=>['class'=>'nav ace-nav'],
+            		'items' => $menuItems,
+            ]);
+            
+            	
+            ?>
             <!-- /.ace-nav -->
+            
         </div>
         <!-- /.navbar-header -->
     </div>
@@ -222,6 +194,8 @@ AppAsset::register($this);
 								</li>
 							</ul>
 						</li>
+						
+						<?php if(!empty(Yii::$app->getSession()->get('account_name'))){?>
 						<li>
 							<a href="#" class="dropdown-toggle">
 								<i class="icon-desktop"></i>
@@ -3416,7 +3390,7 @@ AppAsset::register($this);
 								</li>
 						</ul>
 						</li>
-						
+						<?php }?>
 					</ul>
     <!-- /.nav-list -->
     <div class="sidebar-collapse" id="sidebar-collapse">

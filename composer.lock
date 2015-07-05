@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c986b9e183f0155d715e86a43a018106",
+    "hash": "751e0136a23c88e0bef61aa2c4227803",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -386,7 +386,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/bootstrap-fileinput/zipball/e0f18d6d27e54afab3eb84b45f7eef1df11ed41d",
+                "url": "https://api.github.com/repos/kartik-v/bootstrap-fileinput/zipball/889e829890409d3c8e9fcfba10020958bd02a6a4",
                 "reference": "1b30f372977efdb5aa1cc8b706d9e40be90ff904",
                 "shasum": ""
             },
@@ -508,6 +508,53 @@
             "time": "2015-06-18 15:04:37"
         },
         {
+            "name": "kartik-v/yii2-dropdown-x",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kartik-v/yii2-dropdown-x.git",
+                "reference": "8520855270af448da0e66a6619634b324724c586"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kartik-v/yii2-dropdown-x/zipball/8520855270af448da0e66a6619634b324724c586",
+                "reference": "8520855270af448da0e66a6619634b324724c586",
+                "shasum": ""
+            },
+            "require": {
+                "kartik-v/yii2-krajee-base": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "kartik\\dropdown\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD 3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Kartik Visweswaran",
+                    "email": "kartikv2@gmail.com",
+                    "homepage": "http://www.krajee.com/"
+                }
+            ],
+            "description": "An extended bootstrap dropdown widget for Yii 2 with submenu drilldown.",
+            "homepage": "https://github.com/kartik-v/yii2-dropdown-x",
+            "keywords": [
+                "Context",
+                "click",
+                "extension",
+                "menu",
+                "mouse",
+                "widget",
+                "yii2"
+            ],
+            "time": "2015-04-21 15:12:29"
+        },
+        {
             "name": "kartik-v/yii2-krajee-base",
             "version": "dev-master",
             "source": {
@@ -552,6 +599,53 @@
                 "yii2"
             ],
             "time": "2015-06-16 05:19:57"
+        },
+        {
+            "name": "kartik-v/yii2-nav-x",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kartik-v/yii2-nav-x.git",
+                "reference": "1b53c652dc921ff46bb0fe4c4588711e690f1adb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kartik-v/yii2-nav-x/zipball/1b53c652dc921ff46bb0fe4c4588711e690f1adb",
+                "reference": "1b53c652dc921ff46bb0fe4c4588711e690f1adb",
+                "shasum": ""
+            },
+            "require": {
+                "kartik-v/yii2-dropdown-x": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "kartik\\nav\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD 3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Kartik Visweswaran",
+                    "email": "kartikv2@gmail.com",
+                    "homepage": "http://www.krajee.com/"
+                }
+            ],
+            "description": "An extended bootstrap Nav widget for Yii 2 with submenu drilldown.",
+            "homepage": "https://github.com/kartik-v/yii2-nav-x",
+            "keywords": [
+                "Context",
+                "click",
+                "extension",
+                "menu",
+                "mouse",
+                "widget",
+                "yii2"
+            ],
+            "time": "2015-04-21 15:19:34"
         },
         {
             "name": "kartik-v/yii2-widget-activeform",
@@ -1637,7 +1731,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/d059c19aa1f6e1cc1ee0488d474b162a5b15a903",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/ed54d027fd14156b97bf73864501589171fe115b",
                 "reference": "06e9f915f52906b04377ac62169d66e8cbcd4a66",
                 "shasum": ""
             },

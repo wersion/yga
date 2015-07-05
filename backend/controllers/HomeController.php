@@ -1,4 +1,5 @@
 <?php
+
 namespace backend\controllers;
 
 use Yii;
@@ -8,17 +9,18 @@ use yii\caching\DbDependency;
 use backend\models\TMenu;
 use yii\web\Controller;
 use yii\filters\AccessControl;
+use backend\modules\weixin\models\PublicAccount;
+use backend\base\BackendController;
 
-class HomeController extends Controller {
+class HomeController extends BackendController {
 	public function behaviors() {
 		return [ 
 				'access' => [ 
-						'class' => AccessControl::className (),
-						'rules' => [ 
+						'class' => AccessControl::className (),'rules' => [ 
 								[ 
-										'allow' => true,
-										'roles' => [ '@' 
-								] 
+										'allow' => true,'roles' => [ 
+												'@' 
+										] 
 								],[ 
 										'actions' => [ 
 												'error' 
@@ -47,6 +49,7 @@ class HomeController extends Controller {
 		];
 	}
 	public function actionIndex() {
+		
 		return $this->render ( 'index' );
 	}
 }
